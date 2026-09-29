@@ -1,0 +1,7 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.DS_Store
+sites/
+.99-website/

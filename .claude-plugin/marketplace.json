@@ -1,0 +1,15 @@
+{
+  "name": "99-website",
+  "description": "The 99 Website system from AI Ranking: SEO websites that score 99 on Lighthouse, built by repeatable Claude Code skills.",
+  "owner": { "name": "AI Ranking", "url": "https://www.airankingskool.com" },
+  "plugins": [
+    {
+      "name": "99-website",
+      "source": "./plugins/99-website",
+      "description": "Setup check, business intake and keyword-driven site map skills for building 99-scoring Astro sites on Cloudflare.",
+      "version": "0.1.0",
+      "author": { "name": "AI Ranking" },
+      "license": "MIT"
+    }
+  ]
+}

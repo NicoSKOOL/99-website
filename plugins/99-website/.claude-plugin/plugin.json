@@ -1,0 +1,9 @@
+{
+  "name": "99-website",
+  "description": "Build SEO websites that score 99 on Lighthouse with repeatable skills: setup check, business intake, keyword site map (more stages coming).",
+  "version": "0.1.0",
+  "author": { "name": "AI Ranking" },
+  "homepage": "https://github.com/NicoSKOOL/99-website",
+  "repository": "https://github.com/NicoSKOOL/99-website",
+  "license": "MIT"
+}
