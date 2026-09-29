@@ -5,6 +5,7 @@
 import fs from "node:fs";
 import { pathToFileURL } from "node:url";
 import { parseCsv } from "./lib/csv.mjs";
+import { kwIndex } from "./lib/keyword.mjs";
 
 export const SITEMAP_COLUMNS = ["url", "slug", "page_name", "title_tag", "page_type", "parent", "target_keyword",
   "volume", "kd", "intent", "primary_cta", "phase", "data_source", "notes"];
@@ -65,6 +66,11 @@ export function validateSiteMap(text, { existingPaths = [] } = {}) {
     }
 
     const kw = r.target_keyword.toLowerCase().replace(/\s+/g, " ").trim();
+    if (title && kw) {
+      const at = kwIndex(title, kw);
+      if (at < 0) err(i, "title_tag", `does not contain the target keyword "${r.target_keyword}" (catch it now, not at build)`);
+      else if (at > title.length / 2) err(i, "title_tag", "target keyword is in the second half (put it in the first half)");
+    }
     if (KEYWORD_TYPES.has(t)) {
       if (!kw) err(i, "target_keyword", `required for ${t} pages`);
       if (!INTENTS.includes(r.intent)) err(i, "intent", `"${r.intent}" must be one of ${INTENTS.join(", ")}`);

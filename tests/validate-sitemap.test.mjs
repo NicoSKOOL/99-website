@@ -75,3 +75,12 @@ test("rebuild: URLs the old site already has keep their path, new ones follow th
   assert.equal(urlErrs.length, 1, JSON.stringify(urlErrs));
   assert.equal(urlErrs[0].row, 8, "only /locations/kew/ (not on the old site) must follow the pattern");
 });
+
+test("title must contain the target keyword, in its first half", () => {
+  const bad = GOOD.map((r, i) => (i === 2 ? { ...r, target_keyword: "pavers charlotte nc", title_tag: "Paver Patios Charlotte NC: Walkways | Cedar" } : r));
+  assert.ok(validateSiteMap(csv(bad)).errors.some((e) => e.field === "title_tag" && /keyword/.test(e.message)));
+  const late = GOOD.map((r, i) => (i === 2 ? { ...r, title_tag: "Trusted Local Help With Plans: NDIS Support Coordination" } : r));
+  assert.ok(validateSiteMap(csv(late)).errors.some((e) => e.field === "title_tag" && /first half/.test(e.message)));
+  const ok = GOOD.map((r, i) => (i === 2 ? { ...r, target_keyword: "pavers charlotte nc", title_tag: "Pavers Charlotte NC: Patios and Walkways" } : r));
+  assert.deepEqual(validateSiteMap(csv(ok)).errors, []);
+});
