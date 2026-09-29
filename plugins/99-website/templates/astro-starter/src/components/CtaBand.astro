@@ -1,0 +1,14 @@
+---
+import site from "../data/site.json";
+const b = site.business;
+const { heading = "Ready when you are", text = "Tell us about your project and we will come to you." } = Astro.props;
+const tel = `tel:${b.phone.replace(/[^+\d]/g, "")}`;
+---
+<section class="my-10 rounded-lg bg-brand px-6 py-8 text-paper">
+  <h2 class="mt-0 text-2xl">{heading}</h2>
+  <p class="mt-2">{text}</p>
+  <p class="mt-4 flex flex-wrap gap-3">
+    {b.primary_cta === "form" && <a href="/contact/" class="rounded-md bg-paper px-4 py-2 font-medium text-ink hover:bg-accent">Get a free estimate</a>}
+    <a href={tel} class="rounded-md border border-paper px-4 py-2 font-medium hover:bg-paper hover:text-ink">Call {b.phone}</a>
+  </p>
+</section>

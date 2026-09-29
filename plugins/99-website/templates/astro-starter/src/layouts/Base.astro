@@ -1,0 +1,29 @@
+---
+import "../styles/global.css";
+import site from "../data/site.json";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { graphFor, jsonLd } from "../lib/schema.js";
+const { page, content } = Astro.props;
+const canonical = `${site.site_url}${page.url}`;
+const graph = graphFor({ site, page, content, pages: site.pages });
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{page.title}</title>
+    <meta name="description" content={content.description} />
+    <link rel="canonical" href={canonical} />
+    {site.noindex && <meta name="robots" content="noindex, nofollow" />}
+    <slot name="head" />
+    <script type="application/ld+json" set:html={jsonLd(graph)} />
+  </head>
+  <body class="min-h-dvh flex flex-col">
+    <a href="#main" class="sr-only focus:not-sr-only">Skip to content</a>
+    <Header />
+    <main id="main" class="flex-1"><slot /></main>
+    <Footer />
+  </body>
+</html>

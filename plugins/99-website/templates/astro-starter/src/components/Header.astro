@@ -1,0 +1,30 @@
+---
+import site from "../data/site.json";
+const b = site.business;
+const cta = b.primary_cta === "form"
+  ? { href: "/contact/", label: "Get a free estimate" }
+  : { href: `tel:${b.phone.replace(/[^+\d]/g, "")}`, label: `Call ${b.phone}` };
+const links = [
+  { href: "/services/", label: "Services" },
+  ...(site.nav.areas.length ? [{ href: "/areas-served/", label: "Areas" }] : []),
+  { href: "/about/", label: "About" },
+  { href: "/contact/", label: "Contact" },
+];
+---
+<header class="border-b border-ink/10 bg-paper">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
+    <a href="/" class="font-display text-xl font-semibold text-brand">{b.name}</a>
+    <nav aria-label="Main" class="hidden items-center gap-6 md:flex">
+      {links.map((l) => <a href={l.href} class="hover:text-brand">{l.label}</a>)}
+      <a href={cta.href} class="rounded-md bg-brand px-4 py-2 font-medium text-paper hover:bg-ink">{cta.label}</a>
+    </nav>
+    <details class="relative md:hidden">
+      <summary class="cursor-pointer list-none rounded-md border border-ink/20 px-3 py-2">Menu</summary>
+      <nav aria-label="Mobile" class="absolute right-0 z-10 mt-2 flex w-64 flex-col gap-1 rounded-md border border-ink/10 bg-paper p-3 shadow">
+        {links.map((l) => <a href={l.href} class="rounded px-2 py-2 hover:bg-ink/5">{l.label}</a>)}
+        {site.nav.services.map((s) => <a href={s.url} class="rounded px-2 py-1 text-sm hover:bg-ink/5">{s.name}</a>)}
+        <a href={cta.href} class="mt-2 rounded-md bg-brand px-3 py-2 text-center font-medium text-paper">{cta.label}</a>
+      </nav>
+    </details>
+  </div>
+</header>

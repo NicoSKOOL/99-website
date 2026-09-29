@@ -1,0 +1,7 @@
+{
+  "name": "site",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "astro dev", "build": "astro build", "preview": "astro preview" },
+  "dependencies": { "astro": "^7.3.5", "tailwindcss": "^4.3.3", "@tailwindcss/vite": "^4.3.3" }
+}

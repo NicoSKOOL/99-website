@@ -1,0 +1,22 @@
+---
+import site from "../data/site.json";
+import { contentFor } from "../lib/content.js";
+import Home from "../templates/Home.astro";
+import Service from "../templates/Service.astro";
+import Area from "../templates/Area.astro";
+import Blog from "../templates/Blog.astro";
+import Hub from "../templates/Hub.astro";
+import About from "../templates/About.astro";
+import Contact from "../templates/Contact.astro";
+import Legal from "../templates/Legal.astro";
+export function getStaticPaths() {
+  return site.pages.map((page) => ({
+    params: { path: page.url === "/" ? undefined : page.url.replace(/^\/|\/$/g, "") },
+    props: { page },
+  }));
+}
+const { page } = Astro.props;
+const content = contentFor(page);
+const T = { home: Home, service: Service, area: Area, blog: Blog, hub: Hub, about: About, contact: Contact, legal: Legal }[page.type];
+---
+<T page={page} content={content} />

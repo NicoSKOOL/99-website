@@ -1,0 +1,15 @@
+---
+import site from "../data/site.json";
+const { page } = Astro.props;
+const chain = [];
+for (let p = page; p; p = site.pages.find((x) => x.url === p.parent)) chain.unshift(p);
+---
+{page.url !== "/" && (
+  <nav aria-label="Breadcrumb" class="text-sm">
+    <ol class="flex flex-wrap gap-1 opacity-80">
+      {chain.map((p, i) => (
+        <li>{i < chain.length - 1 ? <><a href={p.url} class="underline">{p.page_name}</a> <span aria-hidden="true">/</span></> : <span aria-current="page">{p.page_name}</span>}</li>
+      ))}
+    </ol>
+  </nav>
+)}

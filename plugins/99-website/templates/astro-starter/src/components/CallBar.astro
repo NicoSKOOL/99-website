@@ -1,0 +1,5 @@
+---
+import site from "../data/site.json";
+const b = site.business;
+---
+<a href={`tel:${b.phone.replace(/[^+\d]/g, "")}`} class="fixed inset-x-0 bottom-0 z-20 bg-brand py-3 text-center font-medium text-paper md:hidden">Call {b.phone}</a>

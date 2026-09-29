@@ -1,0 +1,28 @@
+---
+import site from "../data/site.json";
+const b = site.business;
+---
+<footer class="mt-16 bg-ink text-paper">
+  <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-3">
+    <div>
+      <p class="font-display text-lg font-semibold">{b.name}</p>
+      <p class="mt-2"><a href={`tel:${b.phone.replace(/[^+\d]/g, "")}`} class="underline">{b.phone}</a></p>
+      {b.email && <p><a href={`mailto:${b.email}`} class="underline">{b.email}</a></p>}
+      {b.hours && <p class="mt-2 text-sm opacity-80">{b.hours}</p>}
+    </div>
+    <nav aria-label="Services">
+      <p class="font-semibold">Services</p>
+      <ul class="mt-2 space-y-1 text-sm">{site.nav.services.map((s) => <li><a href={s.url} class="hover:underline">{s.name}</a></li>)}</ul>
+    </nav>
+    {site.nav.areas.length > 0 && (
+      <nav aria-label="Areas">
+        <p class="font-semibold">Areas we serve</p>
+        <ul class="mt-2 space-y-1 text-sm">{site.nav.areas.map((a) => <li><a href={a.url} class="hover:underline">{a.name}</a></li>)}</ul>
+      </nav>
+    )}
+  </div>
+  <div class="border-t border-paper/20 px-4 py-4 text-center text-sm opacity-80">
+    {b.demo && <p>Demo business for a tutorial. {b.name} is fictional.</p>}
+    <p><a href="/privacy-policy/" class="underline">Privacy policy</a></p>
+  </div>
+</footer>

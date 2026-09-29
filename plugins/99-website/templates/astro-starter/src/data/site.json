@@ -1,0 +1,50 @@
+{
+  "site_url": "http://localhost:4321",
+  "noindex": true,
+  "business": {
+    "name": "Cedar & Stone Landscapes",
+    "phone": "(704) 555-0142",
+    "email": "hello@cedarandstone.example",
+    "hours": "Mon-Fri 7am-5pm",
+    "home_city": "Charlotte",
+    "country": "",
+    "location_code": "",
+    "primary_cta": "form",
+    "domain": "",
+    "demo": true,
+    "sensitive": false
+  },
+  "pages": [
+    {
+      "url": "/",
+      "slug": "home",
+      "type": "home",
+      "page_name": "Home",
+      "title": "Charlotte Landscaping | Cedar & Stone",
+      "keyword": "charlotte landscaping",
+      "parent": "",
+      "intent": "commercial",
+      "file": "index.html"
+    },
+    {
+      "url": "/services/paver-patios/",
+      "slug": "paver-patios",
+      "type": "service",
+      "page_name": "Patios and Pavers",
+      "title": "Pavers Charlotte NC | Cedar & Stone",
+      "keyword": "pavers charlotte nc",
+      "parent": "/",
+      "intent": "commercial",
+      "file": "services/paver-patios/index.html"
+    }
+  ],
+  "nav": {
+    "services": [
+      {
+        "url": "/services/paver-patios/",
+        "name": "Patios and Pavers"
+      }
+    ],
+    "areas": []
+  }
+}

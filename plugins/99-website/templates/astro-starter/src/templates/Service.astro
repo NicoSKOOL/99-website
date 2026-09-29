@@ -1,0 +1,45 @@
+---
+import Base from "../layouts/Base.astro";
+import Img from "../components/Img.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
+import Sections from "../components/Sections.astro";
+import CtaBand from "../components/CtaBand.astro";
+import Faq from "../components/Faq.astro";
+import site from "../data/site.json";
+const { page, content } = Astro.props;
+const b = site.business;
+const tel = `tel:${b.phone.replace(/[^+\d]/g, "")}`;
+import CallBar from "../components/CallBar.astro";
+---
+<Base page={page} content={content}>
+<div class="mx-auto max-w-6xl px-4 py-6 pb-20 md:pb-10">
+  <Breadcrumbs page={page} />
+  <div class="mt-6">
+  <section class="grid items-center gap-8 md:grid-cols-2">
+    <div>
+      <h1 class="text-4xl font-semibold leading-tight md:text-5xl">{content.h1}</h1>
+      <p class="mt-4 text-lg">{content.intro}</p>
+      {content.price && <p class="mt-3 font-semibold text-brand">{content.price}</p>}
+      {content.trust && <p class="mt-2 text-sm opacity-80">{content.trust}</p>}
+      <p class="mt-6 flex flex-wrap gap-3">
+        {b.primary_cta === "form" && <a href="/contact/" class="rounded-md bg-brand px-5 py-3 font-medium text-paper hover:bg-ink">Get a free estimate</a>}
+        <a href={tel} class="rounded-md border border-brand px-5 py-3 font-medium text-brand hover:bg-brand hover:text-paper">Call {b.phone}</a>
+      </p>
+    </div>
+    {content.hero_image && <Img name={content.hero_image} alt={content.hero_alt || ""} eager sizes="(min-width: 768px) 50vw, 100vw" class="h-auto w-full rounded-lg" />}
+  </section>
+  </div>
+  <Sections sections={content.sections} ctaAfterEach />
+  {content.steps?.length > 0 && (
+    <section>
+      <h2>How it works</h2>
+      <ol class="mt-4 space-y-4">
+        {content.steps.map((s, i) => <li class="flex gap-4"><span class="font-display text-2xl text-accent">{i + 1}</span><div><h3 class="font-semibold">{s.name}</h3><p>{s.text}</p></div></li>)}
+      </ol>
+    </section>
+  )}
+  <Faq faqs={content.faqs} />
+  <CtaBand />
+</div>
+<CallBar />
+</Base>

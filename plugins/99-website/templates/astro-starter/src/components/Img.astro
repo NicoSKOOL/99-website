@@ -1,0 +1,13 @@
+---
+import manifest from "../../public/img/images.json";
+const { name, alt, sizes = "100vw", eager = false, class: cls } = Astro.props;
+const m = manifest[name];
+---
+{m && (
+  <img
+    src={`/img/${m.srcset.find((s) => s.w >= 960)?.file ?? m.srcset.at(-1).file}`}
+    srcset={m.srcset.map((s) => `/img/${s.file} ${s.w}w`).join(", ")}
+    sizes={sizes} width={m.w} height={m.h} alt={alt}
+    loading={eager ? "eager" : "lazy"} fetchpriority={eager ? "high" : "auto"} decoding="async" class={cls}
+  />
+)}
