@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Validate research/site-map.csv against the 99-website page-plan rules.
-//   node validate-sitemap.mjs sites/<slug>/research/site-map.csv [--json]
+//   node validate-sitemap.mjs sites/<slug>/research/site-map.csv [--json] [--crawl research/crawl/pages.jsonl]
+//   --crawl (rebuild mode): old URLs may keep their path.
 import fs from "node:fs";
 import { pathToFileURL } from "node:url";
 import { parseCsv } from "./lib/csv.mjs";
@@ -14,7 +15,11 @@ const HUB_URLS = ["/services/", "/areas-served/", "/blog/"];
 const PREFIX = { service: "/services/", area: "/areas-served/", blog: "/blog/" };
 const SOURCES = ["datawise", "dataforseo", "manual"];
 
-export function validateSiteMap(text) {
+// existingPaths (rebuild mode): URLs the old site already has. They keep their path even when it
+// breaks the /services/, /areas-served/ pattern, because moving a page that already ranks is risk
+// with no upside. New pages still follow the pattern.
+export function validateSiteMap(text, { existingPaths = [] } = {}) {
+  const existing = new Set(existingPaths);
   const errors = [];
   const warnings = [];
   let parsed;
@@ -41,8 +46,9 @@ export function validateSiteMap(text) {
     } else {
       const segs = u.split("/").filter(Boolean);
       if (t === "home" && u !== "/") err(i, "url", "the home page url must be /");
-      if (t === "hub" && !HUB_URLS.includes(u)) err(i, "url", `a hub url must be one of ${HUB_URLS.join(", ")}`);
-      if (PREFIX[t] && !(u.startsWith(PREFIX[t]) && segs.length === 2)) err(i, "url", `a ${t} url must look like ${PREFIX[t]}{slug}/`);
+      const kept = existing.has(u);
+      if (t === "hub" && !HUB_URLS.includes(u) && !kept) err(i, "url", `a hub url must be one of ${HUB_URLS.join(", ")}`);
+      if (PREFIX[t] && !kept && !(u.startsWith(PREFIX[t]) && segs.length === 2)) err(i, "url", `a ${t} url must look like ${PREFIX[t]}{slug}/`);
       if (["about", "contact", "legal"].includes(t) && segs.length !== 1) err(i, "url", `a ${t} url must be one level deep, like /${t}/`);
       if (!["home", "hub"].includes(t) && segs.length && r.slug !== segs[segs.length - 1]) err(i, "slug", `"${r.slug}" must equal the last url part "${segs[segs.length - 1]}"`);
     }
@@ -90,7 +96,11 @@ export function validateSiteMap(text) {
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const res = validateSiteMap(fs.readFileSync(process.argv[2], "utf8"));
+  const ci = process.argv.indexOf("--crawl");
+  const existingPaths = ci > -1
+    ? fs.readFileSync(process.argv[ci + 1], "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l).path)
+    : [];
+  const res = validateSiteMap(fs.readFileSync(process.argv[2], "utf8"), { existingPaths });
   if (process.argv.includes("--json")) console.log(JSON.stringify({ errors: res.errors, warnings: res.warnings }, null, 2));
   else {
     for (const e of res.errors) console.log(`ERROR  row ${e.row} ${e.field}: ${e.message}`);

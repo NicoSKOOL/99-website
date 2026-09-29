@@ -61,3 +61,17 @@ test("missing columns stop validation with one clear error", () => {
   assert.equal(res.errors.length, 1);
   assert.match(res.errors[0].message, /missing columns/);
 });
+
+test("rebuild: URLs the old site already has keep their path, new ones follow the pattern", () => {
+  const rows = [...GOOD,
+    row({ url: "/locations/", slug: "locations", page_name: "Locations", title_tag: "Where We Support You | My Inclusion", page_type: "hub", parent: "/" }),
+    row({ url: "/locations/box-hill/", slug: "box-hill", page_name: "Box Hill", title_tag: "NDIS Support Box Hill | My Inclusion", page_type: "area", parent: "/locations/", target_keyword: "ndis box hill", intent: "commercial" }),
+    row({ url: "/locations/kew/", slug: "kew", page_name: "Kew", title_tag: "NDIS Support Kew | My Inclusion", page_type: "area", parent: "/locations/", target_keyword: "ndis kew", intent: "commercial" }),
+  ];
+  const text = csv(rows);
+  assert.ok(validateSiteMap(text).errors.some((e) => e.field === "url"), "new build: /locations/ breaks the pattern");
+  const res = validateSiteMap(text, { existingPaths: ["/", "/locations/", "/locations/box-hill/"] });
+  const urlErrs = res.errors.filter((e) => e.field === "url");
+  assert.equal(urlErrs.length, 1, JSON.stringify(urlErrs));
+  assert.equal(urlErrs[0].row, 8, "only /locations/kew/ (not on the old site) must follow the pattern");
+});
