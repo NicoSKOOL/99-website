@@ -35,7 +35,8 @@ export function checkContent({ site, contents, never = [] }) {
     if (t.includes("\u2014")) err(p.url, "text", "contains an em dash");
     if (/\[NEEDS INPUT/i.test(t)) err(p.url, "text", "contains [NEEDS INPUT]");
     if (/lorem ipsum/i.test(t)) err(p.url, "text", "contains lorem ipsum");
-    for (const n of never) if (n && t.toLowerCase().includes(n.toLowerCase())) err(p.url, "text", `uses a never-say phrase: "${n}"`);
+    // Whole words only: "eco" must not match "recommend" or "second".
+    for (const n of never) if (n && new RegExp(`\\b${n.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(t.toLowerCase())) err(p.url, "text", `uses a never-say phrase: "${n}"`);
     if (p.type === "service") {
       const s = (c.steps || []).length; const q = (c.faqs || []).length;
       if (s < 3 || s > 5) err(p.url, "steps", `${s} steps, want 3 to 5`);

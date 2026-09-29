@@ -67,3 +67,13 @@ test("town-swapped sibling copy is caught", () => {
   c["retaining-walls"].intro = c["paver-patios"].intro;
   assert.match(msgs(checkContent({ site, contents: c, never: [] })), /similar/);
 });
+
+test("never-say phrases match whole words only", () => {
+  const c = good();
+  c.home.intro = "We recommend a second, decorative border.";
+  assert.equal(checkContent({ site, contents: c, never: ["eco"] }).errors.filter((e) => /never-say/.test(e.message)).length, 0);
+  c.home.intro = "An eco friendly yard. Tree removal too.";
+  const m = msgs(checkContent({ site, contents: c, never: ["eco", "tree removal"] }));
+  assert.match(m, /"eco"/);
+  assert.match(m, /"tree removal"/);
+});
