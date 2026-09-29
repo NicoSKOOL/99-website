@@ -22,7 +22,9 @@ Scripts live in `<base>/../../scripts/` (`<base>` = the "Base directory for this
    - Exit 2 (site blocks fetching): read the home, services, about and contact pages with the WebFetch tool instead, and note "crawler blocked" in `logs/decision-log.md`.
 2. Read `research/crawl/summary.json`, then the pages in `pages.jsonl` that matter: home, every service page, about, contact, areas/locations, testimonials. Use `title`, `h1`, `h2`, `text`, `tel`, `mailto`, `jsonld_types`.
 3. Pull out, quoting the site where it matters: business name, what they sell in one sentence, the full services list in their words, every place they name, prices or "from" prices, proof (years, registrations, awards, published numbers), phone, email, address, hours, how they want to be contacted.
-4. Search Console (optional): if a DataWise `datawise_search_console` tool exists and the domain is set up in DataWise, pull the top pages by clicks for the last 90 days into `research/gsc-top-pages.csv` with columns `url,clicks,impressions,top_query`. If the call errors or the site is not set up, write "GSC not available through DataWise" in `logs/decision-log.md` and continue. These pages must not be thrown away in the rebuild.
+4. Note what the old site is built on (the `<meta name="generator">` tag, `/wp-content/`, `/_astro/`) in `logs/decision-log.md`. Do not assume the platform from old notes: My Inclusion's notes said WordPress, the crawl showed Astro.
+5. Search Console (optional): if a DataWise `datawise_search_console` tool exists, call `action: list_properties` and pick the property for this domain (prefer `sc-domain:` over a URL-prefix one when both exist). Then call `action: overview` with `range_days: 90`. Write its `top_pages` to `research/gsc-top-pages.csv` with columns `url,clicks,impressions,avg_position,top_query`, taking `top_query` from the `opportunities` rows for the same page (blank if none). If the domain is not listed or the call errors, write "GSC not available through DataWise" in `logs/decision-log.md` and continue. Pages with clicks or real impressions must not be thrown away in the rebuild.
+6. Sensitive niche check on the old site: list any testimonials, star ratings in schema (`aggregateRating`) and "years" claims. Each one gets a `> CONFIRM:` asking where it comes from. Unnamed quotes repeated on every page are a red flag.
 
 ## Step 2: Read the notes folder
 
@@ -30,7 +32,7 @@ Read every `.md` and `.txt` in `business/notes/`. Treat them as claims to confir
 
 ## Step 3: Check the Google Business Profile
 
-Search the web for "<business name> <city>" to find the Google Business Profile. Record the exact name, address and phone shown. Any mismatch with the site (different phone, missing address) is a `> CONFIRM:` line, never a silent pick.
+Search the web for "<business name> <city>" to find the Google Business Profile. If that finds nothing and a DataForSEO tool containing `business_listings_search` exists, try it with a title filter. Service-area profiles (no address) often appear in neither: say so and add a `> CONFIRM:` for the GBP name, phone and category. Record the exact name, address and phone shown. Any mismatch with the site (different phone, missing address) is a `> CONFIRM:` line, never a silent pick.
 
 ## Step 4: Detect a sensitive niche
 
@@ -44,7 +46,7 @@ Set `sensitive_niche: true` for: health, medical, dental, mental health, disabil
 
 ## Step 5: Ask only for the gaps
 
-New mode: ask all ten questions below, **one at a time**, skipping any that an earlier answer already covered. Rebuild mode: ask only the ones still unanswered or marked CONFIRM after Steps 1 to 3.
+New mode: ask all ten questions below, **one at a time**, skipping any that an earlier answer already covered. Rebuild mode: do not interview. Write every unanswered question into the files as a `[NEEDS INPUT: ...]` marker and let Checkpoint 1 ask them all as one numbered list (a rebuild usually leaves 10 to 15 small gaps, and one list is faster to answer than 15 messages).
 
 1. Business name, phone, email, address (or "service area only"), hours.
 2. Every service you offer, in the words your customers use.
@@ -65,7 +67,7 @@ Photos: ask the owner to drop real photos into `business/photos/`. Design refere
 - `business/services.md`: one block per service. Mark money-makers.
 - `business/areas.md`, `proof.md`, `competitors.md`, `brand-voice.md` (tone from their real copy, not a template voice).
 - Every fact carries its source: a page path (`/about/`), a note file name, or "owner answer".
-- Confident fact: write it plainly. Guess or conflict: write the best guess, then a `> CONFIRM:` line directly under it saying what to check. Unknown and no guess possible: `[NEEDS INPUT: what is needed]`.
+- Confident fact: write it plainly. Guess or conflict: write the best guess, then a `> CONFIRM:` line directly under it saying what to check. Unknown and no guess possible: `[NEEDS INPUT: what is needed]`. The colon and a short question are required; a bare `[NEEDS INPUT]` is not counted by `confirm-count.mjs`. Ask each question once: if three services share one question, put it on the first and write "see above" on the others.
 - NEVER invent review counts, ratings, outcomes, revenue, registrations, awards, prices or addresses. "Not found on the site" is a valid answer.
 
 Common location codes: Australia 2036, United States 2840, United Kingdom 2826, Canada 2124, New Zealand 2554.
