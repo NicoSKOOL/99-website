@@ -13,8 +13,9 @@ Scripts live in `<base>/../../scripts/` (`<base>` = the "Base directory for this
 
 1. Read `.99-website/setup.json`. If it is missing, say "Run /99-website:setup-check first" and stop. Note the `keyword_path`.
 2. Ask (skip if the user already gave a URL or said there is no site): "Do you already have a website? If yes, paste the URL." A URL = **rebuild mode**. No site = **new mode**.
-3. Pick a slug from the business name or domain (lowercase, hyphens, e.g. `my-inclusion`). Run `node "<base>/../../scripts/site-init.mjs" <slug> --root sites`. It never overwrites files; if it reports skipped files, this is a re-run: read what is there first and only fill gaps.
+3. New mode: ask question 1 (name and contact details) now, because the slug comes from the name. Then pick a slug from the business name or domain (lowercase, hyphens, e.g. `my-inclusion`). Run `node "<base>/../../scripts/site-init.mjs" <slug> --root sites`. It never overwrites files; if it reports skipped files, this is a re-run: read what is there first and only fill gaps.
 4. Set `mode` in `business/client.md` front matter.
+5. Demo builds: if the user says the business is fictional (a tutorial or test), write "FICTIONAL demo business" at the top of `client.md`, use a 555-01xx phone number and a `.example` email, check the name is not a real local business (web search), and require the footer line "Demo business for a tutorial. <name> is fictional." on every page. Demo sites deploy to a staging URL only.
 
 ## Step 1 (rebuild mode): Read the old site
 
