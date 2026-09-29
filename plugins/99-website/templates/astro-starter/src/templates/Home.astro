@@ -2,7 +2,10 @@
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import Img from "../components/Img.astro";
-import CtaBand from "../components/CtaBand.astro";
+import ProofStrip from "../components/ProofStrip.astro";
+import Testimonials from "../components/Testimonials.astro";
+import EstimateForm from "../components/EstimateForm.astro";
+import CallBar from "../components/CallBar.astro";
 import Faq from "../components/Faq.astro";
 import site from "../data/site.json";
 import { contentFor, hasContent } from "../lib/content.js";
@@ -19,6 +22,7 @@ const band = content.sections?.[0];
 <div class="mx-auto max-w-6xl px-4">
   <Hero content={content} />
 </div>
+<ProofStrip />
 
 <section class="mx-auto max-w-6xl px-4 py-12 md:py-16">
   <h2 class="mt-0">What we build</h2>
@@ -63,7 +67,9 @@ const band = content.sections?.[0];
   </section>
 )}
 
-<section class="mx-auto max-w-6xl px-4 py-12 md:py-16">
+<Testimonials />
+
+<section class="mx-auto max-w-6xl px-4 pb-4">
   {site.nav.areas.length > 0 && (
     <>
       <h2 class="mt-0">Where we work</h2>
@@ -73,7 +79,8 @@ const band = content.sections?.[0];
       </ul>
     </>
   )}
-  <CtaBand />
-  <Faq faqs={content.faqs} />
 </section>
+<Faq faqs={content.faqs} layout="split" />
+<EstimateForm />
+<CallBar />
 </Base>

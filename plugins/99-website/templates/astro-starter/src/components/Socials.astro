@@ -1,0 +1,20 @@
+---
+// Profile links the owner gave (business.socials + the Google Business Profile). Glyphs: Simple Icons (CC0).
+import site from "../data/site.json";
+import { SOCIAL_ICONS } from "../lib/social-icons.js";
+const { class: cls = "" } = Astro.props;
+const b = site.business;
+const links = [...(b.gbp_url ? [{ network: "google", label: "Google", url: b.gbp_url }] : []), ...(b.socials || [])];
+---
+{links.length > 0 && (
+  <ul class={`flex flex-wrap gap-2 ${cls}`}>
+    {links.map((s) => (
+      <li>
+        <a href={s.url} rel="me noopener" target="_blank" aria-label={`${b.name} on ${s.label}`} title={s.label}
+          class="flex h-10 w-10 items-center justify-center rounded-full border border-current/30 transition-colors hover:bg-paper hover:text-brand-deep">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d={SOCIAL_ICONS[s.network] || ""} /></svg>
+        </a>
+      </li>
+    ))}
+  </ul>
+)}

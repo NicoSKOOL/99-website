@@ -4,12 +4,16 @@ export function graphFor({ site, page, content, pages }) {
   const b = site.business;
   const orgId = `${base}/#business`;
   const url = `${base}${page.url}`;
+  const sameAs = [b.gbp_url, ...(b.socials || []).map((s) => s.url)].filter(Boolean);
   const nodes = [
     { "@type": "WebSite", "@id": `${base}/#website`, url: `${base}/`, name: b.name, publisher: { "@id": orgId } },
     {
       "@type": b.schema_type || "LocalBusiness", "@id": orgId, name: b.name, url: `${base}/`,
       ...(b.phone && { telephone: b.phone }), ...(b.email && { email: b.email }),
       ...(b.home_city && { areaServed: [b.home_city, ...site.nav.areas.map((a) => a.name)] }),
+      ...(b.founded && { foundingDate: b.founded }),
+      // Testimonials stay visible text only: self-serving Review/aggregateRating markup is not eligible for stars.
+      ...(sameAs.length && { sameAs }),
     },
     { "@type": "WebPage", "@id": `${url}#webpage`, url, name: page.title, isPartOf: { "@id": `${base}/#website` }, about: { "@id": orgId } },
   ];

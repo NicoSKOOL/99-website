@@ -4,6 +4,6 @@ const b = site.business;
 const tel = `tel:${b.phone.replace(/[^+\d]/g, "")}`;
 ---
 <p class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-stone/50 pt-4 text-base">
-  {b.primary_cta === "form" && <a href="/contact/" class="font-semibold text-brand underline-offset-4 hover:underline">Get a free estimate</a>}
+  {b.primary_cta === "form" && <a href="#estimate" class="font-semibold text-brand underline-offset-4 hover:underline">Get a free estimate</a>}
   <span class="text-muted">or call <a href={tel} class="font-medium text-ink underline-offset-4 hover:underline">{b.phone}</a></span>
 </p>

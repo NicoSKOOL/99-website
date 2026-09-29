@@ -15,6 +15,19 @@ hours:
 gsc_property:         # e.g. sc-domain:example.com
 ga4_measurement_id:
 gbp_exists:
+founded:              # year, only if confirmed
+trust_points:         # 3-4 confirmed proof points, separated by | (shown under every hero)
+gbp_url:              # Google Business Profile share link
+facebook:             # full https URLs of the business's OWN profiles; blank = not shown
+instagram:
+youtube:
+tiktok:
+linkedin:
+x:
+pinterest:
+nextdoor:
+houzz:
+yelp:
 ---
 
 # Client context

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Masters (PNG/JPG) -> WebP at 640/960/1600 + images.json for the starter's Img component.
+// Masters (PNG/JPG) -> WebP at 640/768/960/1600 + images.json for the starter's Img component.
 //   node optimize-images.mjs --in design/masters --out site/public/img [--budget-kb 90]
 // Needs cwebp (brew install webp) and sips (macOS). Quality steps down to 40 until the 960w file fits.
 import fs from "node:fs";
@@ -18,7 +18,7 @@ function encode(src, dst, w, q, alpha) {
   return fs.statSync(dst).size;
 }
 
-export function optimize({ inDir, outDir, widths = [640, 960, 1600], q = 72, budgetKb = 90 }) {
+export function optimize({ inDir, outDir, widths = [640, 768, 960, 1600], q = 72, budgetKb = 90 }) {
   fs.mkdirSync(outDir, { recursive: true });
   const reportFile = path.join(outDir, "images.json");
   const report = fs.existsSync(reportFile) ? JSON.parse(fs.readFileSync(reportFile, "utf8")) : {};

@@ -1,0 +1,30 @@
+---
+// Internal links to sibling services, with their photos, plus the towns this service reaches.
+import Img from "./Img.astro";
+import site from "../data/site.json";
+import { contentFor, hasContent } from "../lib/content.js";
+const { page, related = [] } = Astro.props;
+const services = site.pages.filter((p) => p.type === "service" && p.url !== page.url);
+const picked = related.length ? related.map((slug) => services.find((p) => p.slug === slug)).filter(Boolean) : services.slice(0, 3);
+const c = (p) => (hasContent(p) ? contentFor(p) : {});
+---
+<section class="mx-auto max-w-6xl px-4 py-14 md:py-16">
+  <h2 class="mt-0">Often built together</h2>
+  <ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {picked.slice(0, 3).map((p) => (
+      <li>
+        <a href={p.url} class="group block">
+          {c(p).hero_image && <Img name={c(p).hero_image} alt={c(p).hero_alt || ""} sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 100vw" class="aspect-[3/2] h-auto w-full rounded-md object-cover" />}
+          <h3 class="mt-3 text-lg font-semibold text-brand group-hover:underline">{p.page_name}</h3>
+          {c(p).intro && <p class="mt-1 text-muted">{c(p).intro}</p>}
+        </a>
+      </li>
+    ))}
+  </ul>
+  {site.nav.areas.length > 0 && (
+    <div class="mt-12 flex flex-wrap items-center gap-2 border-t border-stone/60 pt-6">
+      <span class="mr-2 font-medium">Also in</span>
+      {site.nav.areas.map((a) => <a href={a.url} class="rounded-full border border-stone px-3 py-1 text-sm hover:border-brand hover:text-brand">{a.name}</a>)}
+    </div>
+  )}
+</section>

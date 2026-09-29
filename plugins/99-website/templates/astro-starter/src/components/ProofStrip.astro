@@ -1,0 +1,12 @@
+---
+// The owner's confirmed proof points, in one quiet row under the hero. Renders nothing without them.
+import site from "../data/site.json";
+const pts = site.business.trust_points || [];
+---
+{pts.length > 0 && (
+  <div class="border-y border-stone/60 bg-surface/60">
+    <ul class={`mx-auto grid max-w-6xl grid-cols-2 px-4 ${pts.length >= 4 ? "md:grid-cols-4" : "md:grid-cols-3"}`}>
+      {pts.map((p) => <li class="border-stone/60 px-3 py-4 text-center text-sm font-medium text-ink md:border-l md:first:border-l-0 md:text-base">{p}</li>)}
+    </ul>
+  </div>
+)}

@@ -59,3 +59,41 @@ test("redirectLines keeps only 301 rows, Cloudflare format", () => {
   const csv = "old_url,new_url,status,notes\n/,/,keep,\n/old/,/services/x/,301,\n/gone/,,410,thin\n";
   assert.deepEqual(redirectLines(csv), ["/old/ /services/x/ 301"]);
 });
+
+const SOCIAL_CLIENT = CLIENT.replace("hours: Mon-Fri 7am-5pm\n", `hours: Mon-Fri 7am-5pm
+founded: 2014
+trust_points: Licensed NC landscape contractor | $2M insured | 2-year hardscape warranty
+gbp_url: https://g.page/r/abc
+facebook: https://www.facebook.com/cedarandstone
+instagram: https://www.instagram.com/cedarandstone.clt
+youtube:
+houzz: https://www.houzz.com/pro/cedarandstone
+`);
+
+test("socials: filled profile keys become business.socials in a fixed order, blanks skipped", () => {
+  const d = buildSiteData({ siteMapCsv: MAP, clientMd: SOCIAL_CLIENT, siteUrl: "http://x" });
+  assert.deepEqual(d.business.socials.map((s) => s.network), ["facebook", "instagram", "houzz"]);
+  assert.equal(d.business.socials[0].label, "Facebook");
+  assert.equal(d.business.gbp_url, "https://g.page/r/abc");
+});
+
+test("socials: a value that is not an https URL is dropped", () => {
+  const d = buildSiteData({ siteMapCsv: MAP, clientMd: SOCIAL_CLIENT.replace("https://www.facebook.com/cedarandstone", "@cedarandstone"), siteUrl: "http://x" });
+  assert.deepEqual(d.business.socials.map((s) => s.network), ["instagram", "houzz"]);
+});
+
+test("trust points split on | and founded is kept", () => {
+  const d = buildSiteData({ siteMapCsv: MAP, clientMd: SOCIAL_CLIENT, siteUrl: "http://x" });
+  assert.deepEqual(d.business.trust_points, ["Licensed NC landscape contractor", "$2M insured", "2-year hardscape warranty"]);
+  assert.equal(d.business.founded, "2014");
+});
+
+test("testimonials: only quotes with a source are built; empty list when none given", () => {
+  const testimonials = [
+    { quote: "Great patio.", name: "Jenna R.", place: "Ballantyne", service: "paver-patios", source: "owner answer 2026-09-29" },
+    { quote: "Invented praise.", name: "Nobody" },
+  ];
+  const d = buildSiteData({ siteMapCsv: MAP, clientMd: CLIENT, siteUrl: "http://x", testimonials });
+  assert.deepEqual(d.testimonials.map((t) => t.name), ["Jenna R."]);
+  assert.deepEqual(buildSiteData({ siteMapCsv: MAP, clientMd: CLIENT, siteUrl: "http://x" }).testimonials, []);
+});

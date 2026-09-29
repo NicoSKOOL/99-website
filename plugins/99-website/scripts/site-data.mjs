@@ -20,7 +20,15 @@ export function parseFrontMatter(text) {
 
 export const pageFile = (url) => (url === "/" ? "index.html" : `${url.replace(/^\//, "")}index.html`);
 
-export function buildSiteData({ siteMapCsv, clientMd, siteUrl, index = false }) {
+// Footer order. Only profiles the owner gave (https URLs) are shown; they also become schema sameAs.
+export const SOCIAL_NETWORKS = [
+  ["facebook", "Facebook"], ["instagram", "Instagram"], ["youtube", "YouTube"], ["tiktok", "TikTok"],
+  ["linkedin", "LinkedIn"], ["x", "X"], ["pinterest", "Pinterest"], ["nextdoor", "Nextdoor"],
+  ["houzz", "Houzz"], ["yelp", "Yelp"],
+];
+const isUrl = (v) => /^https:\/\/\S+$/.test(v || "");
+
+export function buildSiteData({ siteMapCsv, clientMd, siteUrl, index = false, testimonials = [] }) {
   const fm = parseFrontMatter(clientMd);
   const rows = parseCsv(siteMapCsv).rows.filter((r) => r.phase === "now");
   const pages = rows.map((r) => ({
@@ -36,7 +44,13 @@ export function buildSiteData({ siteMapCsv, clientMd, siteUrl, index = false }) 
       home_city: fm.home_city || "", country: fm.country || "", location_code: fm.location_code || "",
       primary_cta: fm.primary_cta || "form", domain: fm.domain || "",
       demo: /FICTIONAL demo business/i.test(clientMd), sensitive: fm.sensitive_niche === "true",
+      founded: fm.founded || "",
+      trust_points: (fm.trust_points || "").split("|").map((s) => s.trim()).filter(Boolean),
+      gbp_url: isUrl(fm.gbp_url) ? fm.gbp_url : "",
+      socials: SOCIAL_NETWORKS.filter(([k]) => isUrl(fm[k])).map(([network, label]) => ({ network, label, url: fm[network] })),
     },
+    // Never invented: a quote without a source (review link, email, owner answer) is not built.
+    testimonials: testimonials.filter((t) => t.quote && t.name && t.source),
     pages,
     nav: { services: pick("service"), areas: pick("area") },
   };
@@ -52,11 +66,15 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const i = args.indexOf("--site-url");
   const siteUrl = i > -1 ? args[i + 1] : "http://localhost:4321";
   if (!siteDir) { console.error("usage: node site-data.mjs sites/<slug> [--site-url URL] [--index]"); process.exit(1); }
+  const tf = path.join(siteDir, "business/testimonials.json");
   const data = buildSiteData({
     siteMapCsv: fs.readFileSync(path.join(siteDir, "research/site-map.csv"), "utf8"),
     clientMd: fs.readFileSync(path.join(siteDir, "business/client.md"), "utf8"),
     siteUrl, index: args.includes("--index"),
+    testimonials: fs.existsSync(tf) ? JSON.parse(fs.readFileSync(tf, "utf8")) : [],
   });
+  const dropped = fs.existsSync(tf) ? JSON.parse(fs.readFileSync(tf, "utf8")).length - data.testimonials.length : 0;
+  if (dropped) console.log(`${dropped} testimonial(s) skipped: no source`);
   const out = path.join(siteDir, "site/src/data/site.json");
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, JSON.stringify(data, null, 2) + "\n");
@@ -64,5 +82,5 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const lines = fs.existsSync(rf) ? redirectLines(fs.readFileSync(rf, "utf8")) : [];
   fs.mkdirSync(path.join(siteDir, "site/public"), { recursive: true });
   fs.writeFileSync(path.join(siteDir, "site/public/_redirects"), lines.join("\n") + (lines.length ? "\n" : ""));
-  console.log(`${data.pages.length} pages, ${lines.length} redirects, noindex=${data.noindex}, demo=${data.business.demo}`);
+  console.log(`${data.pages.length} pages, ${lines.length} redirects, ${data.testimonials.length} testimonials, ${data.business.socials.length} socials, noindex=${data.noindex}, demo=${data.business.demo}`);
 }

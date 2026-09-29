@@ -1,5 +1,6 @@
 ---
 import site from "../data/site.json";
+import Socials from "./Socials.astro";
 const b = site.business;
 ---
 <footer class="mt-16 bg-brand-deep text-paper">
@@ -9,6 +10,7 @@ const b = site.business;
       <p class="mt-2"><a href={`tel:${b.phone.replace(/[^+\d]/g, "")}`} class="underline">{b.phone}</a></p>
       {b.email && <p><a href={`mailto:${b.email}`} class="underline">{b.email}</a></p>}
       {b.hours && <p class="mt-2 text-sm opacity-80">{b.hours}</p>}
+      <Socials class="mt-5" />
     </div>
     <nav aria-label="Services">
       <p class="font-semibold">Services</p>

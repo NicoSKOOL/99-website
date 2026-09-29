@@ -1,0 +1,37 @@
+---
+// The page's closing section: the lead form, with the phone beside it. id="estimate" is the target of
+// every in-page "Get a free estimate" link. Posts to /api/contact (a Pages Function, added at deploy).
+import site from "../data/site.json";
+const { service = "", heading = "Get a free estimate", text = "Tell us about your yard. We call you back within one business day to book a time on site." } = Astro.props;
+const b = site.business;
+const tel = `tel:${b.phone.replace(/[^+\d]/g, "")}`;
+const field = "mt-1 w-full rounded-md border border-ink/25 bg-paper px-3 py-2.5 text-base focus:border-brand focus:outline-none";
+---
+<section id="estimate" class="scroll-mt-6 bg-surface">
+  <div class="mx-auto grid max-w-6xl gap-10 px-4 py-16 md:grid-cols-5 md:py-20">
+    <div class="md:col-span-2">
+      <h2 class="mt-0 text-3xl md:text-4xl">{heading}</h2>
+      <p class="mt-4 text-lg text-muted">{text}</p>
+      <dl class="mt-8 space-y-4 border-t border-stone pt-6">
+        <div><dt class="text-sm text-muted">Call</dt><dd><a href={tel} class="text-xl font-semibold text-brand hover:underline">{b.phone}</a></dd></div>
+        {b.email && <div><dt class="text-sm text-muted">Email</dt><dd><a href={`mailto:${b.email}`} class="font-medium hover:text-brand hover:underline">{b.email}</a></dd></div>}
+        {b.hours && <div><dt class="text-sm text-muted">Hours</dt><dd>{b.hours}</dd></div>}
+      </dl>
+    </div>
+    <form method="post" action="/api/contact" class="grid gap-4 rounded-md bg-paper p-6 sm:grid-cols-2 md:col-span-3 md:p-8">
+      <label class="text-sm font-medium">Name<input name="name" required autocomplete="name" class={field} /></label>
+      <label class="text-sm font-medium">Phone<input name="phone" type="tel" required autocomplete="tel" class={field} /></label>
+      <label class="text-sm font-medium">Email<input name="email" type="email" autocomplete="email" class={field} /></label>
+      <label class="text-sm font-medium">Town or neighborhood<input name="town" autocomplete="address-level2" class={field} /></label>
+      <label class="text-sm font-medium sm:col-span-2">What do you need?
+        <select name="service" class={field}>
+          {site.nav.services.map((s) => <option value={s.name} selected={s.url.includes(`/${service}/`) && Boolean(service)}>{s.name}</option>)}
+          <option value="Other" selected={!service}>Something else</option>
+        </select>
+      </label>
+      <label class="text-sm font-medium sm:col-span-2">Tell us about the project<textarea name="message" rows="4" class={field}></textarea></label>
+      <label class="hidden" aria-hidden="true">Leave empty<input name="company_website" tabindex="-1" autocomplete="off" /></label>
+      <button type="submit" class="rounded-md bg-brand px-6 py-3 font-medium text-paper transition-colors hover:bg-brand-deep active:translate-y-px sm:col-span-2 sm:justify-self-start">Get a free estimate</button>
+    </form>
+  </div>
+</section>

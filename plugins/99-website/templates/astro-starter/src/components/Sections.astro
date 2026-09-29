@@ -1,16 +1,18 @@
 ---
 import InlineCta from "./InlineCta.astro";
-const { sections = [], ctaAfterEach = false } = Astro.props;
+// ctaEvery: an inline estimate link after every Nth section (never after the last). ctaAfterEach = every 1.
+const { sections = [], ctaAfterEach = false, ctaEvery = ctaAfterEach ? 1 : 0, lead = false } = Astro.props;
+const showCta = (i) => ctaEvery > 0 && (i + 1) % ctaEvery === 0 && i < sections.length - 1;
 ---
-{sections.map((s) => (
-  <section class="mt-12 first:mt-0">
-    <h2>{s.h2}</h2>
-    {(s.paragraphs || []).map((p) => <p class="mt-3">{p}</p>)}
+{sections.map((s, i) => (
+  <section class="mt-14 first:mt-0">
+    <h2 class="mt-0">{s.h2}</h2>
+    {(s.paragraphs || []).map((p, j) => <p class={lead && i === 0 && j === 0 ? "mt-4 text-xl leading-relaxed text-ink" : "mt-4"}>{p}</p>)}
     {s.bullets?.length > 0 && (
-      <ul class="mt-4 grid gap-2 sm:grid-cols-2">
-        {s.bullets.map((b) => <li class="border-l-2 border-brand pl-3">{b}</li>)}
+      <ul class="mt-5 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+        {s.bullets.map((b) => <li class="flex gap-3"><span aria-hidden="true" class="mt-2.5 h-1.5 w-3 shrink-0 rounded-full bg-brand"></span><span>{b}</span></li>)}
       </ul>
     )}
-    {ctaAfterEach && <InlineCta />}
+    {showCta(i) && <InlineCta />}
   </section>
 ))}

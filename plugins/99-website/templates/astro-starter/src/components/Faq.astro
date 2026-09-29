@@ -1,14 +1,36 @@
 ---
-const { faqs = [] } = Astro.props;
+// layout "split": heading and a call line on the left, the questions on the right (home, service, area).
+import site from "../data/site.json";
+const { faqs = [], layout = "stack", heading = "Questions" } = Astro.props;
+const b = site.business;
+const tel = `tel:${b.phone.replace(/[^+\d]/g, "")}`;
 ---
-{faqs.length > 0 && (
+{faqs.length > 0 && layout === "stack" && (
   <section>
-    <h2>Questions</h2>
+    <h2>{heading}</h2>
     {faqs.map((f) => (
       <details class="border-b border-stone/60 px-1 py-4">
         <summary class="cursor-pointer font-medium">{f.q}</summary>
         <p class="mt-2">{f.a}</p>
       </details>
     ))}
+  </section>
+)}
+{faqs.length > 0 && layout === "split" && (
+  <section class="mx-auto grid max-w-6xl gap-8 px-4 py-14 md:grid-cols-3 md:py-16">
+    <div>
+      <h2 class="mt-0">{heading}</h2>
+      <p class="mt-3 text-muted">Something else on your mind? Call <a href={tel} class="font-medium text-ink underline underline-offset-4">{b.phone}</a>.</p>
+    </div>
+    <div class="border-t border-stone/60 md:col-span-2">
+      {faqs.map((f) => (
+        <details class="group border-b border-stone/60 py-5">
+          <summary class="flex cursor-pointer list-none items-start justify-between gap-6 text-lg font-medium">
+            <span>{f.q}</span><span aria-hidden="true" class="text-2xl leading-none text-brand transition-transform group-open:rotate-45">+</span>
+          </summary>
+          <p class="mt-3 text-muted">{f.a}</p>
+        </details>
+      ))}
+    </div>
   </section>
 )}

@@ -1,0 +1,24 @@
+---
+// Service process on a dark band: one photo per step, so the page shows the real job, not only a finished shot.
+import Img from "./Img.astro";
+const { steps = [], heading = "How the job runs" } = Astro.props;
+---
+{steps.length > 0 && (
+  <section class="bg-brand-deep text-paper">
+    <div class="mx-auto max-w-6xl px-4 py-16 md:py-20">
+      <h2 class="mt-0 max-w-2xl text-3xl md:text-4xl">{heading}</h2>
+      <ol class={`mt-10 grid gap-x-6 gap-y-10 sm:grid-cols-2 ${steps.length >= 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
+        {steps.map((s, i) => (
+          <li class="flex flex-col">
+            {s.image && <Img name={s.image} alt={s.image_alt || ""} sizes="(min-width: 1024px) 270px, (min-width: 640px) 45vw, 100vw" class="aspect-[4/3] h-auto w-full rounded-md object-cover" />}
+            <p class="mt-5 flex items-baseline gap-3 border-t border-paper/25 pt-4">
+              <span class="text-sm font-semibold tabular-nums text-paper/70">Step {i + 1}</span>
+            </p>
+            <h3 class="mt-1 text-xl font-semibold">{s.name}</h3>
+            <p class="mt-2 text-paper/85">{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+)}

@@ -7,6 +7,9 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
+// Profile hosts for rebuild intake. Share/intent links are not profiles.
+const SOCIAL_HOST = /(^|\.)(facebook|instagram|youtube|tiktok|linkedin|x|twitter|pinterest|nextdoor|houzz|yelp)\.com$/i;
+const SHARE_PATH = /\/(sharer|share|intent|dialog|pin\/create|shareArticle)/i;
 const SKIP_EXT = /\.(jpe?g|png|gif|webp|avif|svg|pdf|zip|mp4|mp3|xml|txt|css|js|ico|woff2?)$/i;
 
 const ENTITIES = { nbsp: " ", amp: "&", quot: '"', apos: "'", lt: "<", gt: ">", ldquo: "“", rdquo: "”",
@@ -74,6 +77,9 @@ export function extractPage(html, url) {
     tel: [...new Set(hrefs.filter((h) => /^tel:/i.test(h)).map((h) => h.slice(4).replace(/\s+/g, "")))],
     mailto: [...new Set(hrefs.filter((h) => /^mailto:/i.test(h)).map((h) => h.slice(7).split("?")[0]))],
     internal_links: [...internal],
+    socials: [...new Set(hrefs.filter((h) => {
+      try { const l = new URL(h, u); return SOCIAL_HOST.test(l.hostname) && !SHARE_PATH.test(l.pathname) && l.pathname.length > 1; } catch { return false; }
+    }))],
     images: imgs.length,
     images_missing_alt: imgs.filter((t) => !(attr(t, "alt") || "").trim()).length,
   };

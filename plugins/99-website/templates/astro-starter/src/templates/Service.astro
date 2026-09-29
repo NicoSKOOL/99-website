@@ -2,11 +2,14 @@
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
+import ProofStrip from "../components/ProofStrip.astro";
 import Sections from "../components/Sections.astro";
 import AtAGlance from "../components/AtAGlance.astro";
-import Steps from "../components/Steps.astro";
-import CtaBand from "../components/CtaBand.astro";
+import ProcessSteps from "../components/ProcessSteps.astro";
+import Testimonials from "../components/Testimonials.astro";
+import RelatedServices from "../components/RelatedServices.astro";
 import Faq from "../components/Faq.astro";
+import EstimateForm from "../components/EstimateForm.astro";
 import CallBar from "../components/CallBar.astro";
 const { page, content } = Astro.props;
 ---
@@ -15,14 +18,15 @@ const { page, content } = Astro.props;
   <Breadcrumbs page={page} />
   <Hero content={content} />
 </div>
-<div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-3">
-  <div class="md:col-span-2"><Sections sections={content.sections} ctaAfterEach /></div>
+<ProofStrip />
+<div class="mx-auto grid max-w-6xl gap-12 px-4 py-14 md:grid-cols-3 md:py-16">
+  <div class="md:col-span-2"><Sections sections={content.sections} ctaEvery={2} lead /></div>
   <div><AtAGlance content={content} /></div>
 </div>
-<Steps steps={content.steps} />
-<div class="mx-auto max-w-6xl px-4 pb-20 pt-12 md:pb-10">
-  <Faq faqs={content.faqs} />
-  <CtaBand />
-</div>
+<ProcessSteps steps={content.steps} heading={`How we do it, step by step`} />
+<Testimonials service={page.slug} layout="single" />
+<RelatedServices page={page} related={content.related} />
+<Faq faqs={content.faqs} layout="split" heading={`${page.page_name}: common questions`} />
+<EstimateForm service={page.slug} text={`Tell us about your ${page.page_name.toLowerCase()} project. We call you back within one business day to book a time on site.`} />
 <CallBar />
 </Base>

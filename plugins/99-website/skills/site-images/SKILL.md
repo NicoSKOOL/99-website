@@ -12,7 +12,7 @@ Scripts live in `<base>/../../scripts/`.
 2. `FAL_KEY` must be set (doctor `keys` OK). If the fal MCP is connected, call its pricing tool for `fal-ai/flux-2-pro` and say the price per image out loud (about $0.03 per megapixel on 2026-09-29).
 
 ## Step 1: List the slots
-Write `design/image-slots.md`: one hero per built service page, one home hero, one per area page only if it earns it (a local landscape scene, never a fake local job), blog post heroes for `phase=now` posts. Name each slot `<slug>-hero` (home: `home-hero`). Target 10 to 16 images for a 20-page site.
+Write `design/image-slots.md`: one hero per built service page, one home hero, one per area page only if it earns it (a local landscape scene, never a fake local job), blog post heroes for `phase=now` posts. Name each slot `<slug>-hero` (home: `home-hero`). Plus **four process slots per service page**, `<slug>-step-1` to `<slug>-step-4`: one photo per real stage of the job (marked out, dug, base built, finished), each scene specific to that service. A page with only a finished shot reads as a brochure; the process photos are what make each service page its own. Process scenes show the work, tools and materials with the crew out of frame (no people, no hands). Target 12 to 16 heroes plus 4 per service (about 45 images and $1.50 for an 8-service site).
 
 ## Step 2: Real photos first
 Anything in `business/photos/` that fits a slot is used as that slot's master (copy to `design/masters/<slot>.jpg`). Mark it `source: real` in the slots file.

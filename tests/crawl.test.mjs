@@ -79,3 +79,16 @@ test("extractPage drops header, nav and footer from text and decodes all entitie
   assert.equal(p.text, "Hoarding & Squalor “Kind” team’s work → done");
   assert.deepEqual(p.h1, ["Hoarding & Squalor"]);
 });
+
+test("extractPage lists the site's social profile links (footer included), not share links", async () => {
+  const { extractPage } = await import("../plugins/99-website/scripts/crawl.mjs");
+  const html = `<html><body><footer>
+    <a href="https://www.facebook.com/myinclusion/">fb</a>
+    <a href="https://instagram.com/my.inclusion">ig</a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u=x">share</a>
+    <a href="https://www.youtube.com/@myinclusion">yt</a>
+    <a href="https://example.com/about/">about</a>
+  </footer></body></html>`;
+  const p = extractPage(html, "https://myinclusion.com.au/");
+  assert.deepEqual(p.socials, ["https://www.facebook.com/myinclusion/", "https://instagram.com/my.inclusion", "https://www.youtube.com/@myinclusion"]);
+});
