@@ -34,6 +34,7 @@ Use the tools for the `keyword_path`. MCP tool names may carry a prefix; match o
 | Who ranks | `datawise_competitors` | `dataforseo_labs_google_serp_competitors` | read the live SERP |
 
 Rules:
+- Niche and local seeds: use `datawise_keyword_research` with `mode: "suggestions"` (phrases that contain the seed). The default `related` mode returns loose matches ("seek", "red light therapy" for NDIS seeds) that waste the allowance. For a small niche, the best keyword list is usually GSC queries plus suggestions, then one `keyword_metrics` pass to measure them.
 - Batch: one `keyword_metrics` call per 50 keywords. Stop expanding at about 300 keywords. DataWise has a daily data allowance ($4 per day by default), so do not loop.
 - Search-volume APIs reject keywords over 10 words or with punctuation: clean them first.
 - Save every keyword to `research/keywords.csv` with `keyword,volume,cpc,kd,intent,seed,source_tool`. Blank stays blank; `0` stays `0`.
@@ -45,7 +46,7 @@ Group keywords that describe the same job and would be answered by the same page
 
 ## Step 4: Read the live results
 
-For the top 15 clusters by importance to the business, read the live Google results (`serp_organic_live_advanced` if a DataForSEO tool is connected, otherwise the WebSearch tool, searching as a user in the business's country). For each, note in `research/serp-notes.md`: do the top results show dedicated service pages from local businesses (a separate page is justified), directories and aggregators, or articles (a blog post, not a service page)?
+Always read the live results for any keyword with notable volume that sits next to a service word but might mean something else (My Inclusion: "ndis gardening services", 720/mo, turned out to be lawn mowing, not therapeutic gardening). Volume alone never decides a page. Then, for the top 15 clusters by importance to the business, read the live Google results (`serp_organic_live_advanced` if a DataForSEO tool is connected, otherwise the WebSearch tool, searching as a user in the business's country). For each, note in `research/serp-notes.md`: do the top results show dedicated service pages from local businesses (a separate page is justified), directories and aggregators, or articles (a blog post, not a service page)?
 
 ## Step 5: Publication gate
 
@@ -60,10 +61,10 @@ Record each decision (kept, merged into another page as a section, turned into a
 ## Step 6: Intent to page type
 
 - Transactional: service page. Commercial: comparison blog post. Informational: blog post, or an FAQ on the related service page when the answer is short. Navigational: existing page (home, contact). Question variations: FAQ block, never a page per variation.
-- Home page targets "<main service> <home city>". There is no area page for the home city.
+- Home page targets "<main service> <home city>". There is no area page for the home city. If that phrase belongs to a service page (the business has several services and the main one has its own page), the home page takes the umbrella term instead (My Inclusion: home = "ndis registered provider melbourne", support coordination page = "support coordination melbourne"). One keyword per page still applies.
 - Area pages (`/areas-served/<town>-<state>/`) only when `areas.md` lists at least two towns beyond the home city AND there is demand or the results support local pages. No service times town matrix.
 - Rebuild mode: **pages that already exist keep their URL**, even when it breaks the pattern above (My Inclusion keeps `/locations/<suburb>/` and the `/locations/` hub). A page that ranks or earns impressions is not moved to match our pattern. Only brand-new pages follow the pattern. Existing blog posts with clicks or impressions are kept (`keep`), each with its own target keyword from its best GSC query; they count toward the blog, so plan only the new posts on top.
-- Blog: plan 3 to 5 posts, each answering a real question from Step 2 and each linking up to one service page. The first 2 are `phase=now`, the rest `later`.
+- Blog: in rebuild mode, count the kept posts first and plan only new posts on top. Plan 3 to 5 posts, each answering a real question from Step 2 and each linking up to one service page. The first 2 are `phase=now`, the rest `later`.
 - Always include: `/` (home), `/services/` (hub), `/about/`, `/contact/`, `/privacy-policy/` (legal). Add `/areas-served/` and `/blog/` hubs only if they have children.
 
 ## Step 7: Write `research/site-map.csv`
