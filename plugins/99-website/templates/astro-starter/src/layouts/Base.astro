@@ -16,6 +16,7 @@ const graph = graphFor({ site, page, content, pages: site.pages });
     <title>{page.title}</title>
     <meta name="description" content={content.description} />
     <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     {site.noindex && <meta name="robots" content="noindex, nofollow" />}
     <slot name="head" />
     <script type="application/ld+json" set:html={jsonLd(graph)} />
