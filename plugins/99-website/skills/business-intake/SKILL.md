@@ -21,10 +21,11 @@ Scripts live in `<base>/../../scripts/` (`<base>` = the "Base directory for this
 1. Run `node "<base>/../../scripts/crawl.mjs" <url> --out sites/<slug>/research/crawl --limit 150`.
    - Exit 2 (site blocks fetching): read the home, services, about and contact pages with the WebFetch tool instead, and note "crawler blocked" in `logs/decision-log.md`.
 2. Read `research/crawl/summary.json`, then the pages in `pages.jsonl` that matter: home, every service page, about, contact, areas/locations, testimonials. Use `title`, `h1`, `h2`, `text`, `tel`, `mailto`, `jsonld_types`.
-3. Pull out, quoting the site where it matters: business name, what they sell in one sentence, the full services list in their words, every place they name, prices or "from" prices, proof (years, registrations, awards, published numbers), phone, email, address, hours, how they want to be contacted.
-4. Note what the old site is built on (the `<meta name="generator">` tag, `/wp-content/`, `/_astro/`) in `logs/decision-log.md`. Do not assume the platform from old notes: My Inclusion's notes said WordPress, the crawl showed Astro.
-5. Search Console (optional): if a DataWise `datawise_search_console` tool exists, call `action: list_properties` and pick the property for this domain (prefer `sc-domain:` over a URL-prefix one when both exist). Then call `action: overview` with `range_days: 90`. Write its `top_pages` to `research/gsc-top-pages.csv` with columns `url,clicks,impressions,avg_position,top_query`, taking `top_query` from the `opportunities` rows for the same page (blank if none). If the domain is not listed or the call errors, write "GSC not available through DataWise" in `logs/decision-log.md` and continue. Pages with clicks or real impressions must not be thrown away in the rebuild.
-6. Sensitive niche check on the old site: list any testimonials, star ratings in schema (`aggregateRating`) and "years" claims. Each one gets a `> CONFIRM:` asking where it comes from. Unnamed quotes repeated on every page are a red flag.
+3. The old site is a claim too, not the truth. Old copy is often written by an agency or an AI and can list things the business does not do (My Inclusion's old hoarding page listed "trauma cleaning" and "skip hire"; the owner only coordinates support). For every service, add one `> CONFIRM:` asking "what do you do yourselves, what do you only coordinate or refer, and what must never be said".
+4. Pull out, quoting the site where it matters: business name, what they sell in one sentence, the full services list in their words, every place they name, prices or "from" prices, proof (years, registrations, awards, published numbers), phone, email, address, hours, how they want to be contacted.
+5. Note what the old site is built on (the `<meta name="generator">` tag, `/wp-content/`, `/_astro/`) in `logs/decision-log.md`. Do not assume the platform from old notes: My Inclusion's notes said WordPress, the crawl showed Astro.
+6. Search Console (optional): if a DataWise `datawise_search_console` tool exists, call `action: list_properties` and pick the property for this domain (prefer `sc-domain:` over a URL-prefix one when both exist). Then call `action: overview` with `range_days: 90`. Write its `top_pages` to `research/gsc-top-pages.csv` with columns `url,clicks,impressions,avg_position,top_query`, taking `top_query` from the `opportunities` rows for the same page (blank if none). If the domain is not listed or the call errors, write "GSC not available through DataWise" in `logs/decision-log.md` and continue. Pages with clicks or real impressions must not be thrown away in the rebuild.
+7. Sensitive niche check on the old site: list any testimonials, star ratings in schema (`aggregateRating`) and "years" claims. Each one gets a `> CONFIRM:` asking where it comes from. Unnamed quotes repeated on every page are a red flag.
 
 ## Step 2: Read the notes folder
 
@@ -43,6 +44,7 @@ Set `sensitive_niche: true` for: health, medical, dental, mental health, disabil
 - Respectful, person-first language (the business's own voice wins where it differs).
 - Registrations, accreditations and licences stated only if confirmed.
 - NDIS: registration status only if confirmed; no prices unless they match the NDIS Pricing Arrangements and the owner confirms them.
+- No photos or AI images presented as the owner, staff or clients. If the owner does not want to be photographed, use places, objects and work results only.
 
 ## Step 5: Ask only for the gaps
 
