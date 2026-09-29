@@ -1,42 +1,55 @@
 ---
 import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
 import Img from "../components/Img.astro";
-import Breadcrumbs from "../components/Breadcrumbs.astro";
 import Sections from "../components/Sections.astro";
 import CtaBand from "../components/CtaBand.astro";
 import Faq from "../components/Faq.astro";
 import site from "../data/site.json";
+import { contentFor } from "../lib/content.js";
 const { page, content } = Astro.props;
 const b = site.business;
-const tel = `tel:${b.phone.replace(/[^+\d]/g, "")}`;
 const services = site.pages.filter((p) => p.type === "service");
+// The first three rows of the site map are the money-makers: feature them, list the rest.
+const [lead, ...pair] = services.slice(0, 3);
+const rest = services.slice(3);
+const intro = (p) => { try { return contentFor(p).intro; } catch { return ""; } };
+const heroOf = (p) => { try { const c = contentFor(p); return { name: c.hero_image, alt: c.hero_alt || "" }; } catch { return {}; } };
 ---
 <Base page={page} content={content}>
-<div class="mx-auto max-w-6xl px-4 py-10">
-  <section class="grid items-center gap-8 md:grid-cols-2">
-    <div>
-      <h1 class="text-4xl font-semibold leading-tight md:text-5xl">{content.h1}</h1>
-      <p class="mt-4 text-lg">{content.intro}</p>
-      {content.price && <p class="mt-3 font-semibold text-brand">{content.price}</p>}
-      {content.trust && <p class="mt-2 text-sm opacity-80">{content.trust}</p>}
-      <p class="mt-6 flex flex-wrap gap-3">
-        {b.primary_cta === "form" && <a href="/contact/" class="rounded-md bg-brand px-5 py-3 font-medium text-paper hover:bg-ink">Get a free estimate</a>}
-        <a href={tel} class="rounded-md border border-brand px-5 py-3 font-medium text-brand hover:bg-brand hover:text-paper">Call {b.phone}</a>
-      </p>
+<div class="mx-auto max-w-6xl px-4">
+  <Hero content={content} />
+
+  <section class="py-12 md:py-16">
+    <h2>What we build</h2>
+    <div class="mt-6 grid gap-4 md:grid-cols-5">
+      {lead && (
+        <a href={lead.url} class="group rounded-md bg-surface p-5 md:col-span-3 md:row-span-2">
+          {heroOf(lead).name && <Img name={heroOf(lead).name} alt={heroOf(lead).alt} sizes="(min-width: 768px) 60vw, 100vw" class="mb-4 aspect-[4/3] h-auto w-full rounded-md object-cover" />}
+          <h3 class="text-2xl font-semibold text-brand group-hover:underline">{lead.page_name}</h3>
+          <p class="mt-2 text-muted">{intro(lead)}</p>
+        </a>
+      )}
+      {pair.map((s) => (
+        <a href={s.url} class="group rounded-md border border-stone p-5 md:col-span-2">
+          <h3 class="text-xl font-semibold text-brand group-hover:underline">{s.page_name}</h3>
+          <p class="mt-2 text-muted">{intro(s)}</p>
+        </a>
+      ))}
     </div>
-    {content.hero_image && <Img name={content.hero_image} alt={content.hero_alt || ""} eager sizes="(min-width: 768px) 50vw, 100vw" class="h-auto w-full rounded-lg" />}
+    {rest.length > 0 && (
+      <ul class="mt-8 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+        {rest.map((s) => <li><a href={s.url} class="font-medium text-brand underline-offset-4 hover:underline">{s.page_name}</a></li>)}
+      </ul>
+    )}
   </section>
-  <section>
-    <h2>Services</h2>
-    <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {services.map((s) => <li class="rounded-lg border border-ink/10 p-5"><a href={s.url} class="font-display text-lg font-semibold text-brand hover:underline">{s.page_name}</a></li>)}
-    </ul>
-  </section>
+
   <Sections sections={content.sections} />
+
   {site.nav.areas.length > 0 && (
-    <section>
-      <h2>Areas we serve</h2>
-      <p class="mt-3">{b.home_city} and nearby: {site.nav.areas.map((a, i) => <>{i > 0 && ", "}<a href={a.url} class="underline">{a.name}</a></>)}.</p>
+    <section class="py-12">
+      <h2>Where we work</h2>
+      <p class="mt-3">{b.home_city}, plus {site.nav.areas.map((a, i) => <>{i > 0 && (i === site.nav.areas.length - 1 ? " and " : ", ")}<a href={a.url} class="text-brand underline">{a.name}</a></>)}.</p>
     </section>
   )}
   <CtaBand />

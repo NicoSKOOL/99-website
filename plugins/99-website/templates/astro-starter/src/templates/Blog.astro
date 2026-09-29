@@ -16,10 +16,10 @@ const svc = site.pages.find((p) => p.url === content.service_link);
   <Breadcrumbs page={page} />
   <h1 class="mt-6 text-4xl font-semibold leading-tight">{content.h1}</h1>
   {(content.author || content.date) && <p class="mt-2 text-sm opacity-80">{content.author && <>By {content.author}</>}{content.author && content.date && " · "}{content.date && <time datetime={content.date}>{content.date}</time>}</p>}
-  {content.hero_image && <Img name={content.hero_image} alt={content.hero_alt || ""} eager sizes="(min-width: 768px) 768px, 100vw" class="mt-6 h-auto w-full rounded-lg" />}
+  {content.hero_image && <Img name={content.hero_image} alt={content.hero_alt || ""} eager sizes="(min-width: 768px) 768px, 100vw" class="mt-6 h-auto w-full rounded-md" />}
   <p class="mt-6 text-lg">{content.intro}</p>
   <Sections sections={content.sections} />
-  {svc && <aside class="my-10 rounded-lg border border-brand/30 p-5"><p class="font-semibold">Need this done?</p><p class="mt-1">See our <a href={svc.url} class="underline">{svc.page_name}</a> service.</p></aside>}
+  {svc && <aside class="my-10 rounded-md border border-brand/30 p-5"><p class="font-semibold">Need this done?</p><p class="mt-1">See our <a href={svc.url} class="underline">{svc.page_name}</a> service.</p></aside>}
   <Faq faqs={content.faqs} />
 </article>
 </Base>

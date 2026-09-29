@@ -1,0 +1,24 @@
+---
+// One hero for home, service and area pages. Max 4 text elements (taste-skill):
+// one trust line (the page's only eyebrow), the H1, a one-sentence intro, the two CTAs.
+import Img from "./Img.astro";
+import site from "../data/site.json";
+const { content } = Astro.props;
+const b = site.business;
+const tel = `tel:${b.phone.replace(/[^+\d]/g, "")}`;
+const trust = [content.price, content.trust].filter(Boolean).join(". ").replace(/\.\./g, ".");
+---
+<section class="grid items-center gap-8 py-8 md:grid-cols-2 md:gap-12 md:py-12">
+  <div>
+    {trust && <p class="text-sm font-medium text-brand">{trust}</p>}
+    <h1 class="mt-3 text-4xl md:text-5xl">{content.h1}</h1>
+    <p class="mt-4 text-lg text-muted">{content.intro}</p>
+    <p class="mt-7 flex flex-wrap gap-3">
+      {b.primary_cta === "form" && <a href="/contact/" class="rounded-md bg-brand px-5 py-3 font-medium text-paper transition-colors hover:bg-brand-deep">Get a free estimate</a>}
+      <a href={tel} class="rounded-md border border-brand px-5 py-3 font-medium text-brand transition-colors hover:bg-brand hover:text-paper">Call {b.phone}</a>
+    </p>
+  </div>
+  {content.hero_image
+    ? <Img name={content.hero_image} alt={content.hero_alt || ""} eager sizes="(min-width: 768px) 50vw, 100vw" class="aspect-[4/3] h-auto w-full rounded-md object-cover" />
+    : <div class="hidden aspect-[4/3] rounded-md bg-surface md:block" aria-hidden="true"></div>}
+</section>

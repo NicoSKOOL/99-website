@@ -1,10 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #1f2a24;
-  --color-paper: #faf7f0;
-  --color-brand: #2f4a3a;
-  --color-accent: #b08a5a;
+  /* Neutral defaults. site-design replaces this whole block with the site's own tokens. */
+  --color-paper: #f4f4f1;
+  --color-surface: #e8e8e3;
+  --color-stone: #b4b4ab;
+  --color-ink: #1c1f1d;
+  --color-muted: #4d524f;
+  --color-brand: #2a4a3c;
+  --color-brand-deep: #1b3228;
+  --color-accent: #2a4a3c;
   --font-display: ui-serif, Georgia, serif;
   --font-body: ui-sans-serif, system-ui, sans-serif;
 }

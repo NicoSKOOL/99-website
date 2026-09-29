@@ -17,7 +17,7 @@ const children = site.pages.filter((p) => p.parent === page.url);
   <h1 class="mt-6 text-4xl font-semibold">{content.h1}</h1>
   <p class="mt-4 text-lg">{content.intro}</p>
   <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    {children.map((c) => <li class="rounded-lg border border-ink/10 p-5"><a href={c.url} class="font-display text-lg font-semibold text-brand hover:underline">{c.page_name}</a></li>)}
+    {children.map((c) => <li class="rounded-md border border-ink/10 p-5"><a href={c.url} class="font-display text-lg font-semibold text-brand hover:underline">{c.page_name}</a></li>)}
   </ul>
   <Sections sections={content.sections} />
   <CtaBand />

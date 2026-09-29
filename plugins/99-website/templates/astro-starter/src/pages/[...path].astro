@@ -1,6 +1,6 @@
 ---
 import site from "../data/site.json";
-import { contentFor } from "../lib/content.js";
+import { contentFor, hasContent } from "../lib/content.js";
 import Home from "../templates/Home.astro";
 import Service from "../templates/Service.astro";
 import Area from "../templates/Area.astro";
@@ -10,7 +10,9 @@ import About from "../templates/About.astro";
 import Contact from "../templates/Contact.astro";
 import Legal from "../templates/Legal.astro";
 export function getStaticPaths() {
-  return site.pages.map((page) => ({
+  // PARTIAL=1 (checkpoints only): build just the pages that already have copy. Normal builds fail on any missing page.
+  const pages = process.env.PARTIAL === "1" ? site.pages.filter(hasContent) : site.pages;
+  return pages.map((page) => ({
     params: { path: page.url === "/" ? undefined : page.url.replace(/^\/|\/$/g, "") },
     props: { page },
   }));
