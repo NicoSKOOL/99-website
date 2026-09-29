@@ -39,6 +39,7 @@ Rules:
 - Search-volume APIs reject keywords over 10 words or with punctuation: clean them first.
 - Save every keyword to `research/keywords.csv` with `keyword,volume,cpc,kd,intent,seed,source_tool`. Blank stays blank; `0` stays `0`.
 - Small markets (for example Australian suburbs) often show 0. That is normal, not a failure.
+- "<service> near me" volumes are national totals (e.g. "landscapers near me" 90,500 for the whole US). Record them, but never make one a page's target keyword.
 
 ## Step 3: Cluster
 
