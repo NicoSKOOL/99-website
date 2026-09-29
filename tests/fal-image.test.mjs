@@ -38,3 +38,25 @@ test("a failed generation throws and writes no image", async () => {
   await assert.rejects(generateImage({ prompt: "x", out: path.join(dir, "a.png"), id: "a", manifest: path.join(dir, "m.json"), key: "k", fetchImpl, pollMs: 0 }), /failed/);
   assert.ok(!fs.existsSync(path.join(dir, "a.png")));
 });
+
+test("batch: generates every slot, 4 at a time, and writes the manifest once with no lost rows", async () => {
+  const { runBatch } = await import("../plugins/99-website/scripts/fal-image.mjs");
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "falb-"));
+  let n = 0;
+  const fetchImpl = async (url, opts = {}) => {
+    if (opts.method === "POST") { n++; return new Response(JSON.stringify({ request_id: `r${n}`, status_url: `https://q/s${n}`, response_url: `https://q/r${n}` })); }
+    if (url.includes("/s")) return new Response(JSON.stringify({ status: "COMPLETED" }));
+    if (url.includes("/r")) return new Response(JSON.stringify({ images: [{ url: "https://cdn/x.png", width: 8, height: 6 }] }));
+    return new Response(new Uint8Array([1]));
+  };
+  const slots = "a|landscape_4_3|Scene A.\nb|landscape_16_9|Scene B.\nc|1920x1080|Scene C.\n";
+  const manifest = path.join(dir, "m.json");
+  fs.writeFileSync(manifest, JSON.stringify([{ id: "a", old: true }, { id: "keep" }]));
+  const r = await runBatch({ slotsText: slots, style: "STYLE.", outDir: path.join(dir, "masters"), manifest, key: "k", fetchImpl, pollMs: 0 });
+  assert.equal(r.ok, 3);
+  const m = JSON.parse(fs.readFileSync(manifest, "utf8"));
+  assert.deepEqual(m.map((x) => x.id).sort(), ["a", "b", "c", "keep"]);
+  assert.ok(!m.find((x) => x.id === "a").old, "a re-generated slot replaces its old manifest row");
+  assert.equal(m.find((x) => x.id === "b").prompt, "Scene B. STYLE.");
+  for (const id of ["a", "b", "c"]) assert.ok(fs.existsSync(path.join(dir, "masters", `${id}.png`)));
+});

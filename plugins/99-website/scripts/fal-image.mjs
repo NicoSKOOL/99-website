@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // FLUX.2 [pro] stills through the fal queue API. Saves the fal JSON first (lesson 3), then the image.
 //   node fal-image.mjs "<prompt>" design/masters/hero.png --id hero --manifest design/images-manifest.json [--size landscape_4_3]
+//   node fal-image.mjs --batch slots.txt --style "<style block>" --out design/masters --manifest design/images-manifest.json
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -49,9 +50,40 @@ export async function generateImage({ prompt, out, id, manifest, size = "landsca
   return { file: out, jsonFile, url: img.url, width: img.width, height: img.height };
 }
 
+// Batch: one slot per line, "id|size|scene". Runs 4 at a time and writes the manifest once at the end
+// (parallel writers to one file lose rows). A re-generated id replaces its old manifest row.
+export async function runBatch({ slotsText, style = "", outDir, manifest, concurrency = 4, ...opts }) {
+  const slots = slotsText.trim().split(/\r?\n/).filter(Boolean).map((l) => l.split("|").map((s) => s.trim()));
+  const rows = [];
+  let failed = 0;
+  const queue = [...slots];
+  await Promise.all(Array.from({ length: concurrency }, async () => {
+    while (queue.length) {
+      const [id, size, scene] = queue.shift();
+      const prompt = style ? `${scene} ${style}` : scene;
+      try {
+        const r = await generateImage({ ...opts, prompt, out: path.join(outDir, `${id}.png`), id, size, manifest: null });
+        rows.push({ id, file: r.file, json: r.jsonFile, model: opts.model || "fal-ai/flux-2-pro", prompt, size, date: new Date().toISOString() });
+        console.log(`ok   ${id} ${r.width}x${r.height}`);
+      } catch (e) { failed++; console.log(`FAIL ${id}: ${e.message.slice(0, 160)}`); }
+    }
+  }));
+  const old = fs.existsSync(manifest) ? JSON.parse(fs.readFileSync(manifest, "utf8")) : [];
+  const ids = new Set(rows.map((r) => r.id));
+  fs.mkdirSync(path.dirname(manifest), { recursive: true });
+  fs.writeFileSync(manifest, JSON.stringify([...old.filter((r) => !ids.has(r.id)), ...rows], null, 2));
+  return { ok: rows.length, failed };
+}
+
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const a = process.argv.slice(2);
   const opt = (n, d) => (a.includes(n) ? a[a.indexOf(n) + 1] : d);
+  if (a.includes("--batch")) {
+    // node fal-image.mjs --batch slots.txt --style "<style block>" --out design/masters --manifest design/images-manifest.json
+    const r = await runBatch({ slotsText: fs.readFileSync(opt("--batch"), "utf8"), style: opt("--style", ""), outDir: opt("--out", "design/masters"), manifest: opt("--manifest", "design/images-manifest.json") });
+    console.log(`${r.ok} generated, ${r.failed} failed`);
+    process.exit(r.failed ? 1 : 0);
+  }
   const [prompt, out] = a.filter((x, i) => !x.startsWith("--") && !a[i - 1]?.startsWith("--"));
   if (!prompt || !out) { console.error('usage: node fal-image.mjs "<prompt>" out.png --id name --manifest file [--size landscape_4_3]'); process.exit(1); }
   try {

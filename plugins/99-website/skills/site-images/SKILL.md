@@ -23,8 +23,11 @@ For each remaining slot, one prompt = the slot's scene + the style block from `d
 - Never ask for text in the image.
 - No reference image unless you deliberately want an edit of that image.
 - Default size `landscape_4_3`; hero images that sit beside text can be `portrait_4_3`.
-Run per slot:
-`node "<base>/../../scripts/fal-image.mjs" "<prompt>" sites/<slug>/design/masters/<slot>.png --id <slot> --manifest sites/<slug>/design/images-manifest.json`
+- The style block describes light, lens, season and mood. It never names specific objects ("oak and crape myrtle"), or the model puts them in EVERY image and the set looks machine-made. Put objects in each slot's scene instead, and vary them.
+- Wide full-bleed images (photo bands, anything wider than half the screen) need an explicit size of at least `1920x1080`; the named sizes come back only 1024px wide.
+Write all slots to `design/image-slots.txt`, one per line as `slot|size|scene`, and run them in one batch (4 at a time, manifest written once at the end):
+`node "<base>/../../scripts/fal-image.mjs" --batch sites/<slug>/design/image-slots.txt --style "<style block>" --out sites/<slug>/design/masters --manifest sites/<slug>/design/images-manifest.json`
+A single slot can be redone with `node "<base>/../../scripts/fal-image.mjs" "<prompt>" <out.png> --id <slot> --manifest <manifest>`.
 Look at every image. Regenerate (max 2 retries per slot) anything with warped geometry, text, people, or a style that does not match. Log retries in the slots file.
 
 ## Step 4: Optimize
@@ -32,7 +35,7 @@ Look at every image. Regenerate (max 2 retries per slot) anything with warped ge
 Every image must fit the 180 KB budget at 960w.
 
 ## Step 5: Checkpoint (images)
-Show the owner a contact sheet (all 960w WebPs in one HTML page opened in the browser) with slot names and cost so far. Approve, or name the slots to redo. Append `| <date> | Checkpoint: images | <who> | <n> images, $<cost> |` to `logs/approval-log.md`.
+Show the owner a contact sheet (`design/contact-sheet.html`: every master in a 4-column grid with its slot name, opened in the browser) with slot names and cost so far. Approve, or name the slots to redo. Append `| <date> | Checkpoint: images | <who> | <n> images, $<cost> |` to `logs/approval-log.md`.
 
 ## House rules
 - No em dashes. Real beats AI. AI never poses as proof.
