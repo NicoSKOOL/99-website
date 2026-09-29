@@ -47,7 +47,7 @@ export function optimize({ inDir, outDir, widths = [640, 960, 1600], q = 72, bud
   return report;
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const a = process.argv.slice(2);
   const opt = (n, d) => (a.includes(n) ? a[a.indexOf(n) + 1] : d);
   try { optimize({ inDir: opt("--in", "design/masters"), outDir: opt("--out", "site/public/img"), budgetKb: +opt("--budget-kb", 180) }); }

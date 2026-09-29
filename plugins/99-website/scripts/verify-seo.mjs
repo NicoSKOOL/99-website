@@ -63,7 +63,7 @@ export function verifySite({ dist, site }) {
   return { failures };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const siteDir = process.argv[2];
   const site = JSON.parse(fs.readFileSync(path.join(siteDir, "site/src/data/site.json"), "utf8"));
   const { failures } = verifySite({ dist: path.join(siteDir, "site/dist"), site });

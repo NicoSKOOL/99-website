@@ -154,7 +154,7 @@ export async function crawlSite(startUrl, { limit = 150, concurrency = 4, fetchI
   return { source, pages, blocked, errors };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = process.argv.slice(2);
   const url = args.find((a) => /^https?:\/\//.test(a));
   const out = args[args.indexOf("--out") + 1];

@@ -46,7 +46,7 @@ export function redirectLines(redirectsCsv) {
   return parseCsv(redirectsCsv).rows.filter((r) => r.status === "301").map((r) => `${r.old_url} ${r.new_url} 301`);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = process.argv.slice(2);
   const siteDir = args.find((a) => !a.startsWith("--"));
   const i = args.indexOf("--site-url");

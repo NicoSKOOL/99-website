@@ -21,6 +21,6 @@ export function countOpen(siteDir) {
   return out;
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   console.log(JSON.stringify(countOpen(process.argv[2]), null, 2));
 }

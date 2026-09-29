@@ -32,7 +32,7 @@ export function initSite(root, slug) {
   return { siteDir, created, skipped };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [slug] = process.argv.slice(2).filter((a) => !a.startsWith("--"));
   const i = process.argv.indexOf("--root");
   const root = i > -1 ? process.argv[i + 1] : "sites";

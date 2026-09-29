@@ -49,7 +49,7 @@ export async function generateImage({ prompt, out, id, manifest, size = "landsca
   return { file: out, jsonFile, url: img.url, width: img.width, height: img.height };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const a = process.argv.slice(2);
   const opt = (n, d) => (a.includes(n) ? a[a.indexOf(n) + 1] : d);
   const [prompt, out] = a.filter((x, i) => !x.startsWith("--") && !a[i - 1]?.startsWith("--"));

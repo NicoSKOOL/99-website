@@ -21,7 +21,8 @@ export function findSkills(roots, names) {
         const head = fs.readFileSync(p, "utf8").slice(0, 600);
         const m = head.match(/^name:\s*["']?([^"'\n]+?)["']?\s*$/m);
         if (m && wanted.has(m[1]) && found[m[1]] === null) found[m[1]] = p;
-      } else if (e.isDirectory() && !["node_modules", ".git"].includes(e.name)) {
+      } else if (e.isDirectory() && !["node_modules", ".git", "marketplaces"].includes(e.name)) {
+        // plugins/marketplaces holds catalogs that were added, not installed
         walk(p, depth + 1);
       }
     }
@@ -95,7 +96,7 @@ export function runChecks(cwd = process.cwd(), env = process.env) {
   return res;
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const res = runChecks();
   if (process.argv.includes("--json")) {
     console.log(JSON.stringify(res, null, 2));

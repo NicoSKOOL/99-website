@@ -30,7 +30,7 @@ export function scaffoldSite(siteDir, templateDir = DEFAULT) {
   return { created, skipped };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const siteDir = process.argv[2];
   if (!siteDir) { console.error("usage: node scaffold-site.mjs sites/<slug>"); process.exit(1); }
   const r = scaffoldSite(siteDir);

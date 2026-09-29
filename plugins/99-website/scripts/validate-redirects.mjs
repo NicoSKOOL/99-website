@@ -34,7 +34,7 @@ export function validateRedirects({ crawlPaths, redirectsCsv, siteMapCsv }) {
   return { errors };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const arg = (n) => process.argv[process.argv.indexOf(n) + 1];
   const crawlPaths = fs.readFileSync(arg("--crawl"), "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l).path);
   const { errors } = validateRedirects({

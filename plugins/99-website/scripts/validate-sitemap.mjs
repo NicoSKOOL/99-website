@@ -95,7 +95,7 @@ export function validateSiteMap(text, { existingPaths = [] } = {}) {
   return { errors, warnings, rows };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const ci = process.argv.indexOf("--crawl");
   const existingPaths = ci > -1
     ? fs.readFileSync(process.argv[ci + 1], "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l).path)

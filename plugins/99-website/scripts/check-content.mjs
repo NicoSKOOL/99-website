@@ -59,7 +59,7 @@ export function checkContent({ site, contents, never = [] }) {
   return { errors, warnings };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = process.argv.slice(2);
   const siteDir = args.find((a) => !a.startsWith("--"));
   const ni = args.indexOf("--never");

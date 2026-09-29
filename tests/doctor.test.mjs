@@ -32,3 +32,11 @@ test("readEnvKeys reports presence only, from env or .env text", () => {
     "FAL_KEY=abc123\n# RESEND_API_KEY=commented\nEMPTY=\n", { OTHER: "x" });
   assert.deepEqual(res, { FAL_KEY: true, RESEND_API_KEY: false, OTHER: true });
 });
+
+test("findSkills ignores marketplace clones (added, not installed)", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "doc-"));
+  skillDir(root, "plugins/marketplaces/impeccable/.agent/skills/impeccable", "impeccable");
+  assert.equal(findSkills([root], ["impeccable"])["impeccable"], null);
+  const real = skillDir(root, "plugins/cache/impeccable/impeccable/4.4.0/skills/impeccable", "impeccable");
+  assert.equal(findSkills([root], ["impeccable"])["impeccable"], real);
+});
