@@ -1,0 +1,16 @@
+---
+import site from "../data/site.json";
+const { content } = Astro.props;
+const b = site.business;
+const tel = `tel:${b.phone.replace(/[^+\d]/g, "")}`;
+---
+<aside class="rounded-md bg-surface p-6 md:sticky md:top-6">
+  <h2 class="mt-0 text-xl">At a glance</h2>
+  <dl class="mt-4 space-y-3 text-base">
+    {content.price && <div><dt class="text-sm text-muted">Price</dt><dd class="font-semibold">{content.price}</dd></div>}
+    {content.trust && <div><dt class="text-sm text-muted">Cover</dt><dd class="font-semibold">{content.trust}</dd></div>}
+    <div><dt class="text-sm text-muted">Estimate</dt><dd class="font-semibold">Free and on site</dd></div>
+  </dl>
+  {b.primary_cta === "form" && <a href="/contact/" class="mt-6 block rounded-md bg-brand px-5 py-3 text-center font-medium text-paper transition-colors hover:bg-brand-deep">Get a free estimate</a>}
+  <a href={tel} class="mt-3 block rounded-md border border-brand px-5 py-3 text-center font-medium text-brand transition-colors hover:bg-brand hover:text-paper">Call {b.phone}</a>
+</aside>

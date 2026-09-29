@@ -1,0 +1,19 @@
+---
+const { steps = [], heading = "How it works" } = Astro.props;
+---
+{steps.length > 0 && (
+  <section class="bg-surface py-14">
+    <div class="mx-auto max-w-6xl px-4">
+      <h2 class="mt-0">{heading}</h2>
+      <ol class={`mt-8 grid gap-8 sm:grid-cols-2 ${steps.length >= 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
+        {steps.map((s, i) => (
+          <li>
+            <span class="block text-4xl font-semibold text-brand" aria-hidden="true">{i + 1}</span>
+            <h3 class="mt-2 text-lg font-semibold">{s.name}</h3>
+            <p class="mt-1 text-muted">{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+)}

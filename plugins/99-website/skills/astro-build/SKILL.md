@@ -34,6 +34,12 @@ Fix every ERROR and re-run until it passes. Read the WARN lines.
 ## Step 3: Build
 In `site/`: `npm run build`. Fix any build error in the content or templates, never by deleting a page.
 
+## Step 3b: Design pass (now that real copy and images exist)
+The first Cedar & Stone build was called "VERY boring, looks AI-generated". The starter now carries the fixes; keep them and check:
+1. `npx impeccable detect --json dist/` in `site/`. Act on real findings (a flat cream background everywhere, content flush against edges); some cramped-padding hits are heuristic, judge them by the screenshot.
+2. Screenshot the home and one service page at 1280px and look for: identical blocks repeated (use the slim InlineCta after sections, one CtaBand at the end), empty tiles (every feature tile needs its image), dead space beside text (service pages use the AtAGlance panel), one background for every section (use a full-bleed photo band and a surface-coloured steps band).
+3. Lighthouse after every design change (median of 3 on mobile). A change that costs points is fixed (lighter, smaller) or reverted, never kept.
+
 ## Step 4: Hand over to seo-foundation
 Say: "Copy written for <n> pages, build passes. Next: /99-website:seo-foundation."
 

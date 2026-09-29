@@ -4,7 +4,7 @@ const b = site.business;
 const { heading = "Ready when you are", text = "Tell us about your project and we will come to you." } = Astro.props;
 const tel = `tel:${b.phone.replace(/[^+\d]/g, "")}`;
 ---
-<section class="my-12 rounded-md bg-brand px-6 py-8 text-paper">
+<section class="my-14 rounded-md bg-brand px-6 py-10 text-paper md:px-12 md:py-14">
   <h2 class="mt-0 text-2xl">{heading}</h2>
   <p class="mt-2">{text}</p>
   <p class="mt-4 flex flex-wrap gap-3">

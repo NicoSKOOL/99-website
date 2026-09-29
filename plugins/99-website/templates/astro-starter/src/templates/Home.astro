@@ -2,57 +2,78 @@
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import Img from "../components/Img.astro";
-import Sections from "../components/Sections.astro";
 import CtaBand from "../components/CtaBand.astro";
 import Faq from "../components/Faq.astro";
 import site from "../data/site.json";
-import { contentFor } from "../lib/content.js";
+import { contentFor, hasContent } from "../lib/content.js";
 const { page, content } = Astro.props;
 const b = site.business;
 const services = site.pages.filter((p) => p.type === "service");
 // The first three rows of the site map are the money-makers: feature them, list the rest.
 const [lead, ...pair] = services.slice(0, 3);
 const rest = services.slice(3);
-const intro = (p) => { try { return contentFor(p).intro; } catch { return ""; } };
-const heroOf = (p) => { try { const c = contentFor(p); return { name: c.hero_image, alt: c.hero_alt || "" }; } catch { return {}; } };
+const c = (p) => (hasContent(p) ? contentFor(p) : {});
+const band = content.sections?.[0];
 ---
 <Base page={page} content={content}>
 <div class="mx-auto max-w-6xl px-4">
   <Hero content={content} />
+</div>
 
-  <section class="py-12 md:py-16">
-    <h2>What we build</h2>
-    <div class="mt-6 grid gap-4 md:grid-cols-5">
-      {lead && (
-        <a href={lead.url} class="group rounded-md bg-surface p-5 md:col-span-3 md:row-span-2">
-          {heroOf(lead).name && <Img name={heroOf(lead).name} alt={heroOf(lead).alt} sizes="(min-width: 768px) 60vw, 100vw" class="mb-4 aspect-[4/3] h-auto w-full rounded-md object-cover" />}
-          <h3 class="text-2xl font-semibold text-brand group-hover:underline">{lead.page_name}</h3>
-          <p class="mt-2 text-muted">{intro(lead)}</p>
-        </a>
-      )}
+<section class="mx-auto max-w-6xl px-4 py-12 md:py-16">
+  <h2 class="mt-0">What we build</h2>
+  <div class="mt-8 grid gap-6 md:grid-cols-5">
+    {lead && (
+      <a href={lead.url} class="group block md:col-span-3">
+        {c(lead).hero_image && <Img name={c(lead).hero_image} alt={c(lead).hero_alt || ""} sizes="(min-width: 768px) 60vw, 100vw" class="aspect-[4/3] h-auto w-full rounded-md object-cover" />}
+        <h3 class="mt-4 text-2xl font-semibold text-brand group-hover:underline">{lead.page_name}</h3>
+        <p class="mt-1 text-muted">{c(lead).intro}</p>
+      </a>
+    )}
+    <div class="grid gap-6 md:col-span-2">
       {pair.map((s) => (
-        <a href={s.url} class="group rounded-md border border-stone p-5 md:col-span-2">
-          <h3 class="text-xl font-semibold text-brand group-hover:underline">{s.page_name}</h3>
-          <p class="mt-2 text-muted">{intro(s)}</p>
+        <a href={s.url} class="group block">
+          {c(s).hero_image && <Img name={c(s).hero_image} alt={c(s).hero_alt || ""} sizes="(min-width: 768px) 40vw, 100vw" class="aspect-[16/9] h-auto w-full rounded-md object-cover" />}
+          <h3 class="mt-3 text-xl font-semibold text-brand group-hover:underline">{s.page_name}</h3>
+          <p class="mt-1 text-muted">{c(s).intro}</p>
         </a>
       ))}
     </div>
-    {rest.length > 0 && (
-      <ul class="mt-8 grid gap-x-8 gap-y-3 sm:grid-cols-2">
-        {rest.map((s) => <li><a href={s.url} class="font-medium text-brand underline-offset-4 hover:underline">{s.page_name}</a></li>)}
-      </ul>
-    )}
+  </div>
+  {rest.length > 0 && (
+    <ul class="mt-10 grid gap-x-10 border-t border-stone/60 sm:grid-cols-2 lg:grid-cols-3">
+      {rest.map((s) => (
+        <li class="border-b border-stone/60">
+          <a href={s.url} class="flex items-center justify-between gap-4 px-1 py-4 font-medium text-ink hover:text-brand">
+            <span>{s.page_name}</span><span aria-hidden="true" class="text-brand">&rarr;</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</section>
+
+{band && (
+  <section class="relative isolate overflow-hidden bg-brand-deep text-paper">
+    <Img name="home-band" alt="" sizes="100vw" class="absolute inset-0 -z-10 h-full w-full object-cover opacity-55" />
+    <div class="mx-auto max-w-6xl px-4 py-20 md:py-28">
+      <h2 class="mt-0 max-w-xl text-3xl md:text-4xl">{band.h2}</h2>
+      {(band.paragraphs || []).map((p) => <p class="mt-4 max-w-xl text-lg text-paper">{p}</p>)}
+    </div>
   </section>
+)}
 
-  <Sections sections={content.sections} />
-
+<section class="mx-auto max-w-6xl px-4 py-12 md:py-16">
   {site.nav.areas.length > 0 && (
-    <section class="py-12">
-      <h2>Where we work</h2>
-      <p class="mt-3">{b.home_city}, plus {site.nav.areas.map((a, i) => <>{i > 0 && (i === site.nav.areas.length - 1 ? " and " : ", ")}<a href={a.url} class="text-brand underline">{a.name}</a></>)}.</p>
-    </section>
+    <>
+      <h2 class="mt-0">Where we work</h2>
+      <p class="mt-3 text-muted">{b.home_city} and towns within about 30 miles.</p>
+      <ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {site.nav.areas.map((a) => <li><a href={a.url} class="flex items-center justify-between rounded-md border border-stone px-4 py-3 font-medium hover:border-brand hover:text-brand"><span>{a.name}</span><span aria-hidden="true" class="text-brand">&rarr;</span></a></li>)}
+      </ul>
+    </>
   )}
   <CtaBand />
   <Faq faqs={content.faqs} />
-</div>
+</section>
 </Base>

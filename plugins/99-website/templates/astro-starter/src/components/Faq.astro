@@ -5,7 +5,7 @@ const { faqs = [] } = Astro.props;
   <section>
     <h2>Questions</h2>
     {faqs.map((f) => (
-      <details class="border-b border-ink/10 py-3">
+      <details class="border-b border-stone/60 px-1 py-4">
         <summary class="cursor-pointer font-medium">{f.q}</summary>
         <p class="mt-2">{f.a}</p>
       </details>

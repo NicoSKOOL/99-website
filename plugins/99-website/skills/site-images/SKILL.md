@@ -32,7 +32,7 @@ Look at every image. Regenerate (max 2 retries per slot) anything with warped ge
 
 ## Step 4: Optimize
 `node "<base>/../../scripts/optimize-images.mjs" --in sites/<slug>/design/masters --out sites/<slug>/site/public/img`
-Every image must fit the 180 KB budget at 960w.
+Every image must fit the 90 KB budget at 960w (the default). At 180 KB the images below the fold competed with the hero on a throttled phone connection and cost 4 Performance points on Cedar & Stone.
 
 ## Step 5: Checkpoint (images)
 Show the owner a contact sheet (`design/contact-sheet.html`: every master in a 4-column grid with its slot name, opened in the browser) with slot names and cost so far. Approve, or name the slots to redo. Append `| <date> | Checkpoint: images | <who> | <n> images, $<cost> |` to `logs/approval-log.md`.

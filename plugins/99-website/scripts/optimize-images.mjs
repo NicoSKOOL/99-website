@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Masters (PNG/JPG) -> WebP at 640/960/1600 + images.json for the starter's Img component.
-//   node optimize-images.mjs --in design/masters --out site/public/img [--budget-kb 180]
+//   node optimize-images.mjs --in design/masters --out site/public/img [--budget-kb 90]
 // Needs cwebp (brew install webp) and sips (macOS). Quality steps down to 40 until the 960w file fits.
 import fs from "node:fs";
 import path from "node:path";
@@ -18,7 +18,7 @@ function encode(src, dst, w, q, alpha) {
   return fs.statSync(dst).size;
 }
 
-export function optimize({ inDir, outDir, widths = [640, 960, 1600], q = 72, budgetKb = 180 }) {
+export function optimize({ inDir, outDir, widths = [640, 960, 1600], q = 72, budgetKb = 90 }) {
   fs.mkdirSync(outDir, { recursive: true });
   const reportFile = path.join(outDir, "images.json");
   const report = fs.existsSync(reportFile) ? JSON.parse(fs.readFileSync(reportFile, "utf8")) : {};
@@ -50,6 +50,6 @@ export function optimize({ inDir, outDir, widths = [640, 960, 1600], q = 72, bud
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const a = process.argv.slice(2);
   const opt = (n, d) => (a.includes(n) ? a[a.indexOf(n) + 1] : d);
-  try { optimize({ inDir: opt("--in", "design/masters"), outDir: opt("--out", "site/public/img"), budgetKb: +opt("--budget-kb", 180) }); }
+  try { optimize({ inDir: opt("--in", "design/masters"), outDir: opt("--out", "site/public/img"), budgetKb: +opt("--budget-kb", 90) }); }
   catch (e) { console.error(e.message); process.exit(1); }
 }
