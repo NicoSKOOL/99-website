@@ -70,3 +70,12 @@ test("crawlSite falls back to homepage links when there is no sitemap", async ()
   assert.equal(r.source, "links");
   assert.deepEqual(r.pages.map((p) => p.path).sort(), ["/", "/about/"]);
 });
+
+test("extractPage drops header, nav and footer from text and decodes all entities", () => {
+  const html = `<html><head><title>T</title></head><body><header><nav>Home Services About</nav></header>
+<main><h1>Hoarding &#x26; Squalor</h1><p>&ldquo;Kind&rdquo; team&#8217;s work &rarr; done</p></main>
+<footer>&copy; 2026 Footer links</footer></body></html>`;
+  const p = extractPage(html, "https://site.com/a/");
+  assert.equal(p.text, "Hoarding & Squalor “Kind” team’s work → done");
+  assert.deepEqual(p.h1, ["Hoarding & Squalor"]);
+});

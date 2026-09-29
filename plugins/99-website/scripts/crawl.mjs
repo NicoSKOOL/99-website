@@ -9,8 +9,16 @@ import { pathToFileURL } from "node:url";
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
 const SKIP_EXT = /\.(jpe?g|png|gif|webp|avif|svg|pdf|zip|mp4|mp3|xml|txt|css|js|ico|woff2?)$/i;
 
-const decode = (s) => s.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&quot;/g, '"')
-  .replace(/&#0?39;|&apos;|&#8217;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+const ENTITIES = { nbsp: " ", amp: "&", quot: '"', apos: "'", lt: "<", gt: ">", ldquo: "“", rdquo: "”",
+  lsquo: "‘", rsquo: "’", ndash: "-", mdash: "-", hellip: "...", rarr: "→", larr: "←", copy: "©", reg: "®", trade: "™" };
+// One pass, so "&amp;lt;" becomes "&lt;" and is not decoded twice.
+const decode = (s) => s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e) => {
+  if (e[0] === "#") {
+    const n = e[1] === "x" || e[1] === "X" ? parseInt(e.slice(2), 16) : Number(e.slice(1));
+    return n === 8212 || n === 8211 ? "-" : String.fromCodePoint(n);
+  }
+  return ENTITIES[e.toLowerCase()] ?? m;
+});
 const clean = (s) => decode(s.replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim();
 const attr = (tag, name) => {
   const m = tag.match(new RegExp(`\\b${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "i"));
@@ -47,7 +55,9 @@ export function extractPage(html, url) {
     } catch {}
   }
   const imgs = tags(html, "img");
-  const body = html.replace(/<(script|style|noscript|svg|template)\b[\s\S]*?<\/\1>/gi, " ");
+  // Menus and footers repeat on every page and would eat the 6000-character text budget.
+  const body = html.replace(/<(script|style|noscript|svg|template|header|nav|footer)\b[\s\S]*?<\/\1>/gi, " ")
+    .replace(/<head\b[\s\S]*?<\/head>/i, " ");
   const text = clean(body);
   return {
     url: u.href,
