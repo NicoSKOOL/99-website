@@ -2,7 +2,7 @@
 
 Repeatable Claude Code skills that build SEO websites scoring 99 on Lighthouse (Astro + Cloudflare).
 
-Status: Stage 1 (setup check, business intake, keyword site map). Build, audit and deploy skills come next.
+Status: Stage 1 done (setup check, business intake, keyword site map), tested on a real rebuild and a fictional new build. Design, build, audit and deploy skills come next.
 
 ## Install
 
