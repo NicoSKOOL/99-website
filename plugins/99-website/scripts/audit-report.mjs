@@ -54,16 +54,20 @@ export function renderAudit(items, lighthouse) {
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [siteDir] = process.argv.slice(2);
   const label = process.argv.includes("--label") ? process.argv[process.argv.indexOf("--label") + 1] : new Date().toISOString().slice(0, 10);
-  const site = JSON.parse(fs.readFileSync(path.join(siteDir, "site/src/data/site.json"), "utf8"));
-  const dist = path.join(siteDir, "site/dist");
-  const contentsDir = path.join(siteDir, "site/src/content/pages");
-  const contents = Object.fromEntries(fs.readdirSync(contentsDir).filter((f) => f.endsWith(".json")).map((f) => [f.replace(/\.json$/, ""), JSON.parse(fs.readFileSync(path.join(contentsDir, f), "utf8"))]));
-  const seo = [...verifySite({ dist, site }).failures];
-  for (const page of site.pages) {
-    const file = path.join(dist, page.file);
-    if (fs.existsSync(file)) for (const m of validateJsonLd({ html: fs.readFileSync(file, "utf8"), page, business: site.business })) seo.push(`${page.url}: ${m}`);
-  }
-  seo.push(...checkLinks({ dist, site, contents }));
+  const dataFile = path.join(siteDir, "site/src/data/site.json");
+  const seo = [];
+  if (fs.existsSync(dataFile)) {
+    const site = JSON.parse(fs.readFileSync(dataFile, "utf8"));
+    const dist = path.join(siteDir, "site/dist");
+    const contentsDir = path.join(siteDir, "site/src/content/pages");
+    const contents = Object.fromEntries(fs.readdirSync(contentsDir).filter((f) => f.endsWith(".json")).map((f) => [f.replace(/\.json$/, ""), JSON.parse(fs.readFileSync(path.join(contentsDir, f), "utf8"))]));
+    seo.push(...verifySite({ dist, site }).failures);
+    for (const page of site.pages) {
+      const file = path.join(dist, page.file);
+      if (fs.existsSync(file)) for (const m of validateJsonLd({ html: fs.readFileSync(file, "utf8"), page, business: site.business })) seo.push(`${page.url}: ${m}`);
+    }
+    seo.push(...checkLinks({ dist, site, contents }));
+  } else console.log("no site.json (not a 99-website build): SEO gates skipped, Lighthouse only");
   const lighthouse = JSON.parse(fs.readFileSync(path.join(siteDir, `audits/lighthouse-${label}.json`), "utf8"));
   const items = prioritise({ seo, lighthouse });
   fs.writeFileSync(path.join(siteDir, `audits/audit-${label}.md`), renderAudit(items, lighthouse));

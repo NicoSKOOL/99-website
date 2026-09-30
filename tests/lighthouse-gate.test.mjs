@@ -41,3 +41,47 @@ test("failingAudits returns weighted audits under 0.9 with savings", () => {
   assert.deepEqual(f.map((a) => a.id), ["lcp"]);
   assert.equal(f[0].savingsMs, 300);
 });
+
+import { pagesFromSitemap } from "../plugins/99-website/scripts/lighthouse-gate.mjs";
+test("any Astro site: pages come from dist/sitemap.xml, typed by path", () => {
+  const xml = `<urlset><url><loc>https://x.dev/</loc></url><url><loc>https://x.dev/services/paver-patios/</loc></url>
+<url><loc>https://x.dev/services/</loc></url><url><loc>https://x.dev/blog/cost/</loc></url><url><loc>https://x.dev/about/</loc></url></urlset>`;
+  assert.deepEqual(pagesFromSitemap(xml).map((p) => `${p.url} ${p.type}`),
+    ["/ home", "/services/paver-patios/ service", "/services/ hub", "/blog/cost/ blog", "/about/ about"]);
+});
+
+import net from "node:net";
+import { freePort } from "../plugins/99-website/scripts/lighthouse-gate.mjs";
+test("freePort skips a port that is already taken", async () => {
+  const srv = net.createServer().listen(0, "127.0.0.1");
+  await new Promise((r) => srv.once("listening", r));
+  const taken = srv.address().port;
+  const got = await freePort(taken);
+  srv.close();
+  assert.notEqual(got, taken);
+  assert.ok(got > taken);
+});
+
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { serveDist } from "../plugins/99-website/scripts/lighthouse-gate.mjs";
+test("serveDist serves index.html per folder, types, and 404.html for missing pages", async () => {
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), "dist-"));
+  fs.mkdirSync(path.join(d, "services/x"), { recursive: true });
+  fs.writeFileSync(path.join(d, "index.html"), "home");
+  fs.writeFileSync(path.join(d, "services/x/index.html"), "svc");
+  fs.writeFileSync(path.join(d, "404.html"), "nope");
+  fs.writeFileSync(path.join(d, "a.webp"), "img");
+  const port = await freePort(4700);
+  const srv = await serveDist(d, port);
+  const get = (p) => fetch(`http://localhost:${port}${p}`);
+  try {
+    assert.equal(await (await get("/")).text(), "home");
+    assert.equal(await (await get("/services/x/")).text(), "svc");
+    assert.equal((await get("/a.webp")).headers.get("content-type"), "image/webp");
+    const miss = await get("/missing/");
+    assert.equal(miss.status, 404); assert.equal(await miss.text(), "nope");
+    assert.equal((await get("/../../etc/passwd")).status, 404);
+  } finally { srv.close(); }
+});

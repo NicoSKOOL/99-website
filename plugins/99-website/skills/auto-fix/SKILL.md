@@ -18,7 +18,7 @@ If the only way to 99 is one of these, stop and tell Nico what the trade is.
 ## One pass
 1. `git -C sites/<slug>/site init` if it is not a repo yet, then commit the current state as "before pass N".
 2. Fix P1 items first, then P2. Fix in the TEMPLATE or component when the same failure is on several pages (templates, not pages). Common fixes are in the audit's "Fix:" hints.
-3. Rebuild, re-run the three SEO gates (they must still pass).
+3. Rebuild, re-run the three SEO gates (they must still pass). A site not built by 99-website (no `site/src/data/site.json`) has no gates: check titles, one H1, canonicals, image sizes and schema by reading the built HTML instead.
 4. `lighthouse-gate.mjs sites/<slug> --label pass-N`, then `compare-audits.mjs sites/<slug> <previous-label> pass-N`.
 5. Regression (exit 1): revert that pass with `git -C sites/<slug>/site checkout -- .`, write in `audits/fix-log.md` what you tried and why it made things worse, and try a different fix next pass.
 6. No regression: commit "pass N" in the site repo.
