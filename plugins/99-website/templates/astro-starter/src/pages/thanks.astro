@@ -1,0 +1,16 @@
+---
+// Where the estimate form lands after a successful send. Never indexed, never in the sitemap (sitemap.xml lists site.pages only).
+import Base from "../layouts/Base.astro";
+import site from "../data/site.json";
+const b = site.business;
+const page = { url: "/thanks/", title: `Thanks, we got your request | ${b.name}`, type: "legal", page_name: "Thanks", parent: "/" };
+const content = { description: `Thanks for your estimate request. ${b.name} will call you back within one business day.` };
+const tel = `tel:${b.phone.replace(/[^+\d]/g, "")}`;
+---
+<Base page={page} content={content} noindex>
+<div class="mx-auto max-w-3xl px-4 py-16">
+  <h1 class="text-4xl font-semibold">Thanks, we got your request</h1>
+  <p class="mt-4 text-lg">We call you back within one business day. In a hurry? Call <a href={tel} class="font-semibold text-brand underline">{b.phone}</a>.</p>
+  <p class="mt-6"><a href="/" class="underline">Back to the home page</a></p>
+</div>
+</Base>

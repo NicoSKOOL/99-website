@@ -31,7 +31,19 @@ const field = "mt-1 w-full rounded-md border border-ink/25 bg-paper px-3 py-2.5 
       </label>
       <label class="text-sm font-medium sm:col-span-2">Tell us about the project<textarea name="message" rows="4" class={field}></textarea></label>
       <label class="hidden" aria-hidden="true">Leave empty<input name="company_website" tabindex="-1" autocomplete="off" /></label>
+      {b.turnstile_site_key && <div class="cf-turnstile sm:col-span-2" data-sitekey={b.turnstile_site_key}></div>}
       <button type="submit" class="rounded-md bg-brand px-6 py-3 font-medium text-paper transition-colors hover:bg-brand-deep active:translate-y-px sm:col-span-2 sm:justify-self-start">Get a free estimate</button>
     </form>
+    {b.turnstile_site_key && (
+      <script is:inline>
+        // Turnstile loads on the first focus inside the form, so it costs no Lighthouse points on page load.
+        document.querySelectorAll("#estimate form").forEach((f) => f.addEventListener("focusin", () => {
+          if (document.getElementById("cf-ts")) return;
+          const s = document.createElement("script");
+          s.id = "cf-ts"; s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js"; s.async = true;
+          document.head.appendChild(s);
+        }, { once: true }));
+      </script>
+    )}
   </div>
 </section>

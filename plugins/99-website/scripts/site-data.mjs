@@ -44,7 +44,7 @@ export function buildSiteData({ siteMapCsv, clientMd, siteUrl, index = false, te
       home_city: fm.home_city || "", country: fm.country || "", location_code: fm.location_code || "",
       primary_cta: fm.primary_cta || "form", domain: fm.domain || "",
       demo: /FICTIONAL demo business/i.test(clientMd), sensitive: fm.sensitive_niche === "true",
-      founded: fm.founded || "",
+      founded: fm.founded || "", turnstile_site_key: fm.turnstile_site_key || "",
       trust_points: (fm.trust_points || "").split("|").map((s) => s.trim()).filter(Boolean),
       gbp_url: isUrl(fm.gbp_url) ? fm.gbp_url : "",
       socials: SOCIAL_NETWORKS.filter(([k]) => isUrl(fm[k])).map(([network, label]) => ({ network, label, url: fm[network] })),

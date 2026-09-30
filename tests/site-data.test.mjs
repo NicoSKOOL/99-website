@@ -97,3 +97,9 @@ test("testimonials: only quotes with a source are built; empty list when none gi
   assert.deepEqual(d.testimonials.map((t) => t.name), ["Jenna R."]);
   assert.deepEqual(buildSiteData({ siteMapCsv: MAP, clientMd: CLIENT, siteUrl: "http://x" }).testimonials, []);
 });
+
+test("turnstile_site_key from client.md reaches business, blank stays blank", () => {
+  assert.equal(buildSiteData({ siteMapCsv: MAP, clientMd: CLIENT, siteUrl: "http://x" }).business.turnstile_site_key, "");
+  const c = CLIENT.replace("hours: Mon-Fri 7am-5pm\n", "hours: Mon-Fri 7am-5pm\nturnstile_site_key: 0x4AAAAAAAtest\n");
+  assert.equal(buildSiteData({ siteMapCsv: MAP, clientMd: c, siteUrl: "http://x" }).business.turnstile_site_key, "0x4AAAAAAAtest");
+});

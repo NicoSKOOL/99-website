@@ -4,7 +4,7 @@ import site from "../data/site.json";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { graphFor, jsonLd } from "../lib/schema.js";
-const { page, content } = Astro.props;
+const { page, content, noindex = false } = Astro.props;
 const canonical = `${site.site_url}${page.url}`;
 const graph = graphFor({ site, page, content, pages: site.pages });
 ---
@@ -17,7 +17,7 @@ const graph = graphFor({ site, page, content, pages: site.pages });
     <meta name="description" content={content.description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    {site.noindex && <meta name="robots" content="noindex, nofollow" />}
+    {(site.noindex || noindex) && <meta name="robots" content="noindex, nofollow" />}
     <slot name="head" />
     <script type="application/ld+json" set:html={jsonLd(graph)} />
   </head>
