@@ -19,6 +19,9 @@ In `sites/<slug>/site/`: `npm run build`. Never measure `npm run dev`.
 ## Step 3: One list
 `node "<base>/../../scripts/audit-report.mjs" sites/<slug> --label <label>`
 
+## Step 3b: Legacy pattern scan (measure only)
+If Modern Web Guidance is installed: in `site/`, `npx -y modern-web-guidance@latest legacy-scan src --json`. Verify each finding against its `keepWhen` / `dropWhen` rubric and append the real ones to `audits/audit-<label>.md` under "Modern web" as P2 items, each with its guide id as the Fix hint. Do not change any file here.
+
 ## Step 4: Report
 Show the score table and the P1 items. Say plainly if everything passes. Never round a 98 up to 99 and never call a noindex SEO score "100" without the note the report prints.
 Update project-state row `site-audit` with the label and the lowest score.

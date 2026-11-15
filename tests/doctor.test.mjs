@@ -22,6 +22,15 @@ test("findSkills finds skills by frontmatter name at any depth", () => {
   assert.equal(found["missing-one"], null);
 });
 
+test("findSkills finds Modern Web Guidance installed as a plugin or into a project", () => {
+  const home = fs.mkdtempSync(path.join(os.tmpdir(), "doc-"));
+  const plugin = skillDir(home, "plugins/cache/googlechrome/modern-web-guidance/1.0.0/skills/modern-web-guidance", "modern-web-guidance");
+  assert.equal(findSkills([home], ["modern-web-guidance"])["modern-web-guidance"], plugin);
+  const project = fs.mkdtempSync(path.join(os.tmpdir(), "doc-"));
+  const local = skillDir(project, "skills/modern-web-guidance", "modern-web-guidance");
+  assert.equal(findSkills([project], ["modern-web-guidance"])["modern-web-guidance"], local);
+});
+
 test("findSkills ignores roots that do not exist", () => {
   const found = findSkills(["/definitely/not/here"], ["impeccable"]);
   assert.equal(found["impeccable"], null);

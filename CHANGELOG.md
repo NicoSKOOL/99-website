@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased (2026-11-15)
+
+Added Google's Modern Web Guidance 1.0 (https://developer.chrome.com/blog/modern-web-guidance-v1), the expert-checked, Baseline-aware web platform skills now backed by Chrome, Firefox and Edge.
+
+- **setup-check / doctor.mjs**: new `web_guidance` check (WARN, not a blocker) with the install fix.
+- **site-design**: Step 4a, look up each interactive piece (menu, FAQ, form, hero image) in Modern Web Guidance before building it; native HTML/CSS over JS widgets; a written browser support policy (Baseline Widely available, newer features only with feature detection, no polyfills); `prefers-reduced-motion`.
+- **astro-build**: Step 3c modern web pass, `legacy-scan` on `site/src`, verify, fix in templates, Lighthouse must not drop.
+- **site-audit**: legacy-scan findings added to the audit as P2 "Modern web" items (measure only).
+- **auto-fix**: Core Web Vitals and accessibility fixes are looked up in Modern Web Guidance instead of guessed; long tasks under 50 ms.
+
 ## 0.1.0 (2026-09-29, Stage 1)
 
 Tested end to end on two sites: a real rebuild (myinclusion.com.au, NDIS, Australia) and a fictional new build (Cedar & Stone Landscapes, Charlotte NC).

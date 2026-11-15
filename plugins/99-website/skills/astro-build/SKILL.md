@@ -41,6 +41,16 @@ The first Cedar & Stone build was called "VERY boring, looks AI-generated". The 
 3. Screenshot the home and one service page at 1280px and look for: identical blocks repeated (the slim InlineCta after every second section, the form once at the end), empty tiles (every feature tile needs its image), dead space beside text (service pages use the AtAGlance panel), one background for every section (use a full-bleed photo band and a surface-coloured steps band).
 4. Lighthouse after every design change (median of 3 on mobile). A change that costs points is fixed (lighter, smaller) or reverted, never kept.
 
+## Step 3c: Modern web pass (Modern Web Guidance)
+Skip with one line if `doctor.mjs` shows `web_guidance MISSING`.
+1. In `site/`: `npx -y modern-web-guidance@latest legacy-scan src --json`.
+2. Verify each finding against its `keepWhen` / `dropWhen` rubric and drop false positives (intentional fallbacks, `@supports` guards). The scan only covers about 20% of the guides, so zero findings is not a clean bill.
+3. For each real finding: `retrieve "<guide-id>"`, apply the fix in the TEMPLATE or component (templates, not pages), then re-run `legacy-scan` on the files you changed.
+4. For anything you wrote or changed by hand in this step (a component, new CSS, the form), search the guide for that pattern first, as in site-design Step 4a.
+5. Rebuild and re-run Lighthouse on home and one service page. A modern fix that costs points is reverted, never kept.
+6. A fix that belongs in every future site goes into `templates/astro-starter/` too (auto-fix's "Improve the system" rule).
+Log findings fixed and dropped in `logs/decision-log.md` in one line each.
+
 ## Step 4: Hand over to seo-foundation
 Say: "Copy written for <n> pages, build passes. Next: /99-website:seo-foundation."
 

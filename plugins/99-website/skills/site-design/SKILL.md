@@ -32,6 +32,13 @@ Load taste-skill and apply these overrides, which beat its defaults:
 ## Step 4: Shape before code
 Run `/impeccable shape` on the home page and the service template. `design/PRODUCT.md` already answers its discovery questions, so write the brief straight to `design/shape-brief.md` (3 to 5 bullets: job and audience, outcome and proof, direction, page sequence, anti-goals). Its confirmation is Checkpoint 3, not a separate stop. Apply what fits the overrides; ignore anything that adds motion or effects.
 
+## Step 4a: Modern Web Guidance for every interactive piece
+Before writing or changing any interactive or layout-critical part of the starter (mobile menu, FAQ, estimate form, header, hero image, dark mode if the owner wants it), run the `modern-web-guidance` skill: `npx -y modern-web-guidance@latest search "<2 to 5 word query>"`, then `retrieve` the guide and follow it. One search per pattern, for example `mobile navigation menu`, `accessible accordion`, `form validation`, `prevent layout shift`, `hero image priority`.
+- Prefer the platform over script: `<details>`/`<summary>` for the FAQ, the Popover API or `<dialog>` for the mobile menu, native constraint validation with `:user-invalid` for the form, `autocomplete` on every contact field. No JS widget where HTML or CSS does the job (it costs Lighthouse points and accessibility).
+- Browser support policy for 99-website sites: Baseline Widely available with no fallback; anything newer only behind feature detection, degrading to a working plain version, and no polyfill packages. Write this line into `design/style.md` so later steps follow it.
+- Anything that moves honours `prefers-reduced-motion: reduce`. Bad ARIA is worse than none: use the guide's markup as given.
+- If the skill is not installed, `doctor.mjs` shows `web_guidance MISSING`: print its fix line and carry on (it is a quality pass, not a blocker).
+
 ## Step 4b: taste-skill rules that change the starter's defaults
 - Hero: max 4 text elements. The trust line (with the price on service pages) is the page's one small label above the H1; nothing under the buttons. The starter's `Hero.astro` already does this.
 - One label per intent site-wide: "Get a free estimate" (or the booking/call equivalent) and "Call <phone>".

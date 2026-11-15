@@ -93,6 +93,14 @@ export function runChecks(cwd = process.cwd(), env = process.env) {
     fix: "/plugin marketplace add pbakaus/impeccable  then install Impeccable from /plugin;  npx skills add https://github.com/Leonxlnx/taste-skill --skill \"design-taste-frontend\"",
     needed_for: "build",
   };
+
+  const mwg = findSkills(roots, ["modern-web-guidance"])["modern-web-guidance"];
+  res.web_guidance = {
+    ok: Boolean(mwg),
+    detail: mwg ? "modern-web-guidance installed" : "modern-web-guidance not installed",
+    fix: "claude plugin marketplace add GoogleChrome/modern-web-guidance  then  claude plugin install modern-web-guidance@googlechrome  (or in a project: npx modern-web-guidance@latest install)",
+    needed_for: "build",
+  };
   return res;
 }
 

@@ -1,6 +1,6 @@
 ---
 name: setup-check
-description: Use first, before building any site with the 99-website pack, or when any 99-website step fails with a connection or login error. Checks Node, Cloudflare login, Lighthouse, Chrome, keys, the design skills, and the DataWise, DataForSEO, fal and treg connections, then picks the keyword data source (DataWise, DataForSEO or manual).
+description: Use first, before building any site with the 99-website pack, or when any 99-website step fails with a connection or login error. Checks Node, Cloudflare login, Lighthouse, Chrome, keys, the design skills, Modern Web Guidance, and the DataWise, DataForSEO, fal and treg connections, then picks the keyword data source (DataWise, DataForSEO or manual).
 ---
 
 # Setup check
@@ -62,6 +62,7 @@ A table with columns Check, Status (OK, MISSING, WARN), Needed for (now, build, 
 | DataForSEO not connected | Sign up at https://app.dataforseo.com/?aff=182182, then `claude mcp add --transport http --scope user dataforseo https://mcp.dataforseo.com/mcp` and Authenticate in `/mcp` |
 | fal not connected | Put `export FAL_KEY=...` in `~/.zshrc`, open a new terminal, restart `claude` (this plugin already declares the fal server) |
 | treg not connected | Only needed at the deploy step. Leave it for now |
+| Modern Web Guidance missing (`web_guidance`) | `claude plugin marketplace add GoogleChrome/modern-web-guidance` then `claude plugin install modern-web-guidance@googlechrome`, restart `claude`. Google's expert-checked HTML, CSS, accessibility and Core Web Vitals guides; site-design, astro-build, site-audit and auto-fix use it. Its CLI runs through `npx`, so allow `npx -y modern-web-guidance@latest *` with network access when Claude Code asks |
 | Anything from the doctor JSON | Use its `fix` text |
 
 Then one line: `Keyword data: <path>`.

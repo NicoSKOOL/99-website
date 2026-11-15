@@ -18,6 +18,7 @@ If the only way to 99 is one of these, stop and tell Nico what the trade is.
 ## One pass
 1. `git -C sites/<slug>/site init` if it is not a repo yet, then commit the current state as "before pass N".
 2. Fix P1 items first, then P2. Fix in the TEMPLATE or component when the same failure is on several pages (templates, not pages). Common fixes are in the audit's "Fix:" hints.
+   Before fixing a Core Web Vitals, accessibility or best-practice item (LCP, CLS, INP or long tasks, contrast, focus, labels, ARIA, CSP), look it up in Modern Web Guidance if installed: `npx -y modern-web-guidance@latest search "<the problem in 2 to 5 words>"`, then `retrieve` the guide and apply its fix instead of guessing. "Modern web" items from the audit already name their guide id. Keep long tasks under 50 ms on the Lighthouse mobile run.
 3. Rebuild, re-run the three SEO gates (they must still pass). A site not built by 99-website (no `site/src/data/site.json`) has no gates: check titles, one H1, canonicals, image sizes and schema by reading the built HTML instead.
 4. `lighthouse-gate.mjs sites/<slug> --label pass-N`, then `compare-audits.mjs sites/<slug> <previous-label> pass-N`.
 5. Regression (exit 1): revert that pass with `git -C sites/<slug>/site checkout -- .`, write in `audits/fix-log.md` what you tried and why it made things worse, and try a different fix next pass.

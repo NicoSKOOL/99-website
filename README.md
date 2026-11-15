@@ -17,6 +17,13 @@ Status: Stage 1 done (setup check, business intake, keyword site map), tested on
 | `/99-website:business-intake` | Learns the business (interview, or crawl of the old site) into `sites/<slug>/business/` |
 | `/99-website:keyword-sitemap` | Turns keyword data into an approved page plan (`site-map.csv`) |
 
+## Recommended: Modern Web Guidance
+
+The design, build, audit and fix skills use Google's [Modern Web Guidance](https://developer.chrome.com/docs/modern-web-guidance) (expert-checked HTML, CSS, accessibility and Core Web Vitals guides). Install it once:
+
+    claude plugin marketplace add GoogleChrome/modern-web-guidance
+    claude plugin install modern-web-guidance@googlechrome
+
 ## Keyword data
 
 - DataWise (needs DataWise Pro or AI Ranking Skool membership): https://datawiseseo.com
